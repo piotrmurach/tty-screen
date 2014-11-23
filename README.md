@@ -4,12 +4,14 @@
 [![Code Climate](https://codeclimate.com/github/peter-murach/tty-screen.png)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/peter-murach/tty-screen/badge.png)][coverage]
 
-> Terminal screen size detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
-
 [gem]: http://badge.fury.io/rb/tty-screen
 [travis]: http://travis-ci.org/peter-murach/tty-screen
 [codeclimate]: https://codeclimate.com/github/peter-murach/tty-screen
 [coverage]: https://coveralls.io/r/peter-murach/tty-screen
+
+> Terminal screen size detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
+
+**TTY::Screen** provides independent screen size detection component for [TTY](https://github.com/peter-murach/tty) toolkit.
 
 ## Installation
 
