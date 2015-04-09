@@ -37,6 +37,12 @@ RSpec.describe TTY::Screen, '.size' do
       allow(Kernel).to receive(:require).with('io/console').and_raise(LoadError)
       expect(screen.from_io_console).to eq(nil)
     end
+
+    it "doesn't calculate size if it is run without a console" do
+      require 'io/console'
+      allow(IO).to receive(:console).and_return(nil)
+      expect(screen.from_io_console).to eq(nil)
+    end
   end
 
   context 'from tput' do
