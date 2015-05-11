@@ -21,10 +21,9 @@ RSpec.describe TTY::Screen, '.size' do
       screen = double(:screen, size: [51, 280])
       allow(TTY::Screen).to receive(:new).and_return(screen)
       expect(TTY::Screen.size).to eq([51, 280])
-      expect(TTY::Screen.size).to eq([51, 280])
       expect(TTY::Screen.width).to eq(280)
       expect(TTY::Screen.height).to eq(51)
-      expect(TTY::Screen).to have_received(:new).once
+      expect(TTY::Screen).to have_received(:new).exactly(3).times
     end
   end
 
