@@ -7,11 +7,6 @@ module TTY
   #
   # @api public
   class Screen
-    # Specifies an output stream object
-    #
-    # @api public
-    attr_reader :output
-
     # Create terminal screen
     #
     # @param [Hash] options
@@ -149,6 +144,11 @@ module TTY
     end
 
     private
+
+    # Specifies an output stream object
+    #
+    # @api public
+    attr_reader :output
 
     # Runs command in subprocess
     #
