@@ -78,6 +78,7 @@ module TTY
     def from_io_console
       return if jruby?
       Kernel.require 'io/console'
+      return unless IO.console
       size = IO.console.winsize
       size if nonzero_column?(size[1])
     rescue LoadError
