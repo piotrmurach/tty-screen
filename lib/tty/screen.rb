@@ -23,14 +23,17 @@ module TTY
       @output = options.fetch(:output) { $stderr }
     end
 
+    # @api public
     def self.size
-      @size ||= new.size
+      new.size
     end
 
+    # @api public
     def self.width
       size[1]
     end
 
+    # @api public
     def self.height
       size[0]
     end
@@ -52,7 +55,7 @@ module TTY
     end
     alias_method :rows, :height
 
-    # Terminal column count
+    # Terminal columns count
     #
     # @return [Integer]
     #
