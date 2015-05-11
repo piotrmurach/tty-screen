@@ -1,3 +1,5 @@
+# coding: utf-8
+
 require 'spec_helper'
 
 RSpec.describe TTY::Screen, '.size' do
@@ -39,8 +41,7 @@ RSpec.describe TTY::Screen, '.size' do
     end
 
     it "doesn't calculate size if it is run without a console" do
-      require 'io/console'
-      allow(IO).to receive(:console).and_return(nil)
+      allow(IO).to receive(:respond_to?).with(:console).and_return(false)
       expect(screen.from_io_console).to eq(nil)
     end
   end

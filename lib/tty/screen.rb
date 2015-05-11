@@ -35,6 +35,33 @@ module TTY
       size[0]
     end
 
+    # Default terminal size
+    #
+    # @api public
+    def default_size
+      [27, 80]
+    end
+
+    # Terminal lines count
+    #
+    # @return [Integer]
+    #
+    # @api public
+    def height
+      size[0]
+    end
+    alias_method :rows, :height
+
+    # Terminal column count
+    #
+    # @return [Integer]
+    #
+    # @api public
+    def width
+      size[1]
+    end
+    alias_method :columns, :width
+
     # Get terminal rows and columns
     #
     # @return [Array[Integer, Integer]]
@@ -43,32 +70,15 @@ module TTY
     # @api public
     def size
       @size ||= begin
-        size = from_io_console
+        size =   from_io_console
         size ||= from_readline
         size ||= from_tput
         size ||= from_stty
         size ||= from_env
         size ||= from_ansicon
-        size || default_size
+        size ||  default_size
       end
     end
-
-    # Default terminal size
-    #
-    # @api public
-    def default_size
-      [27, 80]
-    end
-
-    def height
-      size[0]
-    end
-    alias_method :rows, :height
-
-    def width
-      size[1]
-    end
-    alias_method :columns, :width
 
     # Detect screen size by loading io/console lib
     #
@@ -78,7 +88,7 @@ module TTY
     def from_io_console
       return if jruby?
       Kernel.require 'io/console'
-      return unless IO.console
+      return unless IO.respond_to?(:console)
       size = IO.console.winsize
       size if nonzero_column?(size[1])
     rescue LoadError
@@ -135,14 +145,14 @@ module TTY
       size if nonzero_column?(size[1])
     end
 
+    private
+
     # Runs command in subprocess
     #
-    # @api public
+    # @api private
     def run_command(command, name)
       `#{command} #{name} 2>/dev/null`
     end
-
-    private
 
     def nonzero_column?(column)
       column.to_i > 0
