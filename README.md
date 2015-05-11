@@ -44,7 +44,9 @@ screen.height   # => 51
 You can also use above methods as class instance methods:
 
 ```ruby
-TTY::Screen.size  # => [51, 280]
+TTY::Screen.size     # => [51, 280]
+TTY::Screen.width    # => 280
+TTY::Screen.height   # => 51
 ```
 
 ## Contributing
@@ -57,4 +59,4 @@ TTY::Screen.size  # => [51, 280]
 
 ## Copyright
 
-Copyright (c) 2014 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2015 Piotr Murach. See LICENSE for further details.
