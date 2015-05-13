@@ -7,6 +7,20 @@ RSpec.describe TTY::Screen, '.size' do
 
   subject(:screen) { described_class.new(output: output) }
 
+  context 'default size' do
+    it "suggests default terminal size" do
+      allow(ENV).to receive(:[]).with('LINES').and_return(0)
+      allow(ENV).to receive(:[]).with('COLUMNS').and_return(0)
+      expect(screen.default_size).to eq([27, 80])
+    end
+
+    it "attempts to get default terminal size from environment" do
+      allow(ENV).to receive(:[]).with('LINES').and_return(52)
+      allow(ENV).to receive(:[]).with('COLUMNS').and_return(200)
+      expect(screen.default_size).to eq([52, 200])
+    end
+  end
+
   context 'size' do
     it "correctly falls through choices" do
       allow(screen).to receive(:from_io_console).and_return([51, 280])

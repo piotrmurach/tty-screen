@@ -37,7 +37,10 @@ module TTY
     #
     # @api public
     def default_size
-      [27, 80]
+      [
+        ENV['LINES'].to_i.nonzero? || 27,
+        ENV['COLUMNS'].to_i.nonzero? || 80
+      ]
     end
 
     # Terminal lines count
