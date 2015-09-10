@@ -51,7 +51,7 @@ RSpec.describe TTY::Screen, '.size' do
   context 'from io console' do
     it "doesn't calculate size if jruby " do
       allow(screen).to receive(:jruby?).and_return(true)
-      expect(screen.from_io_console).to eq(nil)
+      expect(screen.from_io_console).to eq(false)
     end
 
     it "calcualtes the size" do
