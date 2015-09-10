@@ -88,6 +88,7 @@ module TTY
     # @api private
     def from_io_console
       return if jruby?
+      return unless $stdout.tty?
       Kernel.require 'io/console'
       return unless IO.respond_to?(:console)
       size = IO.console.winsize
