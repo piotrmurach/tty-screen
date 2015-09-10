@@ -55,6 +55,7 @@ RSpec.describe TTY::Screen, '.size' do
     end
 
     it "calcualtes the size" do
+      allow(screen).to receive(:jruby?).and_return(false)
       allow(TTY::Screen).to receive(:require).with('io/console').
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)
@@ -73,6 +74,7 @@ RSpec.describe TTY::Screen, '.size' do
     end
 
     it "doesn't calculate size if it is run without a console" do
+      allow(screen).to receive(:jruby?).and_return(false)
       allow(TTY::Screen).to receive(:require).with('io/console').
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)

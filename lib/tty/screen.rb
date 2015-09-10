@@ -87,7 +87,7 @@ module TTY
     #
     # @api private
     def from_io_console
-      return if jruby?
+      return false if jruby?
       try_io_console { |size|
         size if nonzero_column?(size[1])
       }
