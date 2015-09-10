@@ -88,17 +88,36 @@ module TTY
     # @api private
     def from_io_console
       return if jruby?
-      return unless $stdout.tty?
-      Kernel.require 'io/console'
-      return unless IO.respond_to?(:console)
-      size = IO.console.winsize
-      size if nonzero_column?(size[1])
-    rescue LoadError
-      # Didn't find io/console in stdlib
+      try_io_console { |size|
+        size if nonzero_column?(size[1])
+      }
+    end
+
+    # Attempts to load native console extension
+    #
+    # @return [Boolean, Array]
+    #
+    # @api private
+    def try_io_console
+      begin
+        require 'io/console'
+
+        begin
+          if output.tty? && IO.method_defined?(:winsize)
+            yield output.winsize
+          else
+            false
+          end
+        rescue Errno::EOPNOTSUPP
+          false
+        end
+      rescue LoadError
+        warn 'no native io/console support' if $VERBOSE
+        false
+      end
     end
 
     # Detect screen size using Readline
-    #
     #
     # @api private
     def from_readline
@@ -110,7 +129,7 @@ module TTY
 
     # Detect terminal size from tput utility
     #
-    # @api public
+    # @api private
     def from_tput
       return unless output.tty?
       lines = run_command('tput', 'lines').to_i
@@ -121,7 +140,7 @@ module TTY
 
     # Detect terminal size from stty utility
     #
-    # @api public
+    # @api private
     def from_stty
       return unless output.tty?
       size = run_command('stty', 'size').split.map(&:to_i)
@@ -157,8 +176,8 @@ module TTY
     # Runs command in subprocess
     #
     # @api private
-    def run_command(command, name)
-      `#{command} #{name} 2>/dev/null`
+    def run_command(command, *args)
+      `#{command} #{args.join(' ')} 2>/dev/null`
     end
 
     def nonzero_column?(column)

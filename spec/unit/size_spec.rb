@@ -1,9 +1,16 @@
 # coding: utf-8
 
 require 'spec_helper'
+require 'delegate'
 
 RSpec.describe TTY::Screen, '.size' do
-  let(:output) { StringIO.new('', 'w+') }
+  class Output < SimpleDelegator
+    def winsize
+      [100, 200]
+    end
+  end
+
+  let(:output) { Output.new(StringIO.new('', 'w+')) }
 
   subject(:screen) { described_class.new(output: output) }
 
@@ -47,15 +54,30 @@ RSpec.describe TTY::Screen, '.size' do
       expect(screen.from_io_console).to eq(nil)
     end
 
+    it "calcualtes the size" do
+      allow(TTY::Screen).to receive(:require).with('io/console').
+        and_return(true)
+      allow(output).to receive(:tty?).and_return(true)
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
+      allow(output).to receive(:winsize).and_return([100, 200])
+
+      expect(screen.from_io_console).to eq([100, 200])
+      expect(output).to have_received(:winsize)
+    end
+
     it "doesn't calculate size if io/console not available" do
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(Kernel).to receive(:require).with('io/console').and_raise(LoadError)
-      expect(screen.from_io_console).to eq(nil)
+      allow(TTY::Screen).to receive(:require).with('io/console').
+        and_raise(LoadError)
+      expect(screen.from_io_console).to eq(false)
     end
 
     it "doesn't calculate size if it is run without a console" do
-      allow(IO).to receive(:respond_to?).with(:console).and_return(false)
-      expect(screen.from_io_console).to eq(nil)
+      allow(TTY::Screen).to receive(:require).with('io/console').
+        and_return(true)
+      allow(output).to receive(:tty?).and_return(true)
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
+      expect(screen.from_io_console).to eq(false)
     end
   end
 
