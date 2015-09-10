@@ -1,13 +1,15 @@
 # TTY::Screen
-[![Gem Version](https://badge.fury.io/rb/tty-screen.png)][gem]
-[![Build Status](https://secure.travis-ci.org/peter-murach/tty-screen.png?branch=master)][travis]
-[![Code Climate](https://codeclimate.com/github/peter-murach/tty-screen.png)][codeclimate]
-[![Coverage Status](https://coveralls.io/repos/peter-murach/tty-screen/badge.png)][coverage]
+[![Gem Version](https://badge.fury.io/rb/tty-screen.svg)][gem]
+[![Build Status](https://secure.travis-ci.org/peter-murach/tty-screen.svg?branch=master)][travis]
+[![Code Climate](https://codeclimate.com/github/peter-murach/tty-screen/badges/gpa.svg)][codeclimate]
+[![Coverage Status](https://coveralls.io/repos/peter-murach/tty-screen/badge.svg)][coverage]
+[![Inline docs](http://inch-ci.org/github/peter-murach/tty-screen.svg?branch=master)][inchpages]
 
 [gem]: http://badge.fury.io/rb/tty-screen
 [travis]: http://travis-ci.org/peter-murach/tty-screen
 [codeclimate]: https://codeclimate.com/github/peter-murach/tty-screen
 [coverage]: https://coveralls.io/r/peter-murach/tty-screen
+[inchpages]: http://inch-ci.org/github/peter-murach/tty-screen
 
 > Terminal screen size detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
 
