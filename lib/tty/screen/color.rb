@@ -3,7 +3,6 @@
 module TTY
   class Screen
     class Color
-
       # Initialize color support
       #
       # @api public
@@ -29,20 +28,18 @@ module TTY
       #
       # @api private
       def from_curses(curses_class = nil)
-        begin
-          require 'curses'
+        require 'curses'
 
-          begin
-            curses_class ||= Curses
-            curses_class.init_screen
-            curses_class.has_colors?
-          ensure
-            curses_class.close_screen
-          end
-        rescue LoadError
-          warn 'no native curses support' if $VERBOSE
-          false
+        begin
+          curses_class ||= Curses
+          curses_class.init_screen
+          curses_class.has_colors?
+        ensure
+          curses_class.close_screen
         end
+      rescue LoadError
+        warn 'no native curses support' if $VERBOSE
+        false
       end
 
       # Shell out to tput to check color support
@@ -50,6 +47,8 @@ module TTY
       # @api private
       def from_tput
         %x(tput colors 2>/dev/null).to_i > 2
+      rescue Errno::ENOENT
+        false
       end
 
       # Inspect environment $TERM variable for color support
@@ -73,6 +72,6 @@ module TTY
       def tty?
         output.tty?
       end
-    end
-  end
+    end # Color
+  end # Screen
 end # TTY
