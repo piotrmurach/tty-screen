@@ -11,9 +11,9 @@
 [coverage]: https://coveralls.io/r/peter-murach/tty-screen
 [inchpages]: http://inch-ci.org/github/peter-murach/tty-screen
 
-> Terminal screen size detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
+> Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
 
-**TTY::Screen** provides independent screen size detection component for [TTY](https://github.com/peter-murach/tty) toolkit.
+**TTY::Screen** provides independent screen size and color detection component for [TTY](https://github.com/peter-murach/tty) toolkit.
 
 ## Installation
 
@@ -43,12 +43,21 @@ screen.width    # => 280
 screen.height   # => 51
 ```
 
+Using the `color?` method, you can check whether terminal has color capabilities like so
+
+```ruby
+screen = TTY::Screen.new
+screen.color?   # => true
+```
+
 You can also use above methods as class instance methods:
 
 ```ruby
 TTY::Screen.size     # => [51, 280]
 TTY::Screen.width    # => 280
 TTY::Screen.height   # => 51
+
+TTY::Screen.color?   # => true
 ```
 
 ## Contributing
