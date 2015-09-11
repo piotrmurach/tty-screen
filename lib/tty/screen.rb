@@ -1,5 +1,6 @@
 # coding: utf-8
 
+require 'tty/screen/color'
 require 'tty/screen/version'
 
 module TTY
@@ -16,6 +17,7 @@ module TTY
     # @api public
     def initialize(options = {})
       @output = options.fetch(:output) { $stderr }
+      @color = Color.new(output: @output)
     end
 
     # @api public
@@ -31,6 +33,20 @@ module TTY
     # @api public
     def self.height
       size[0]
+    end
+
+    def self.color?
+      new.color?
+    end
+
+    # Check if terminal has color support
+    #
+    # @return [Boolean]
+    #   true if can display color, false otherwise
+    #
+    # @api public
+    def color?
+      @color.supports?
     end
 
     # Default terminal size
