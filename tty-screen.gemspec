@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = [""]
   spec.summary       = %q{Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
   spec.description   = %q{Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
-  spec.homepage      = ""
+  spec.homepage      = "http://peter-murach.github.io/tty/"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
