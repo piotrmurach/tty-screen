@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.version       = TTY::Screen::VERSION
   spec.authors       = ["Piotr Murach"]
   spec.email         = [""]
-  spec.summary       = %q{Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
-  spec.description   = %q{Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
+  spec.summary       = %q{Terminal screen size and color detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
+  spec.description   = %q{Terminal screen size and color detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.}
   spec.homepage      = "http://peter-murach.github.io/tty/"
   spec.license       = "MIT"
 

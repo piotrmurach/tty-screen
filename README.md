@@ -11,7 +11,7 @@
 [coverage]: https://coveralls.io/r/peter-murach/tty-screen
 [inchpages]: http://inch-ci.org/github/peter-murach/tty-screen
 
-> Terminal screen size and color detection which works both on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
+> Terminal screen size and color detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
 
 **TTY::Screen** provides independent screen size and color detection component for [TTY](https://github.com/peter-murach/tty) toolkit.
 
