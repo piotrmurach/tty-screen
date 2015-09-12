@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'delegate'
 
-RSpec.describe TTY::Screen, '.size' do
+RSpec.describe TTY::Screen::Size, '.size' do
   class Output < SimpleDelegator
     def winsize
       [100, 200]
@@ -32,19 +32,9 @@ RSpec.describe TTY::Screen, '.size' do
     it "correctly falls through choices" do
       allow(screen).to receive(:from_io_console).and_return([51, 280])
       allow(screen).to receive(:from_readline).and_return(nil)
+
       expect(screen.size).to eq([51, 280])
       expect(screen).to_not have_received(:from_readline)
-      expect(screen.width).to eq(280)
-      expect(screen.height).to eq(51)
-    end
-
-    it "allows to call size as class instance" do
-      screen = double(:screen, size: [51, 280])
-      allow(TTY::Screen).to receive(:new).and_return(screen)
-      expect(TTY::Screen.size).to eq([51, 280])
-      expect(TTY::Screen.width).to eq(280)
-      expect(TTY::Screen.height).to eq(51)
-      expect(TTY::Screen).to have_received(:new).exactly(3).times
     end
   end
 
@@ -56,7 +46,7 @@ RSpec.describe TTY::Screen, '.size' do
 
     it "calcualtes the size" do
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(TTY::Screen).to receive(:require).with('io/console').
+      allow(screen).to receive(:require).with('io/console').
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
@@ -68,14 +58,14 @@ RSpec.describe TTY::Screen, '.size' do
 
     it "doesn't calculate size if io/console not available" do
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(TTY::Screen).to receive(:require).with('io/console').
+      allow(screen).to receive(:require).with('io/console').
         and_raise(LoadError)
       expect(screen.from_io_console).to eq(false)
     end
 
     it "doesn't calculate size if it is run without a console" do
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(TTY::Screen).to receive(:require).with('io/console').
+      allow(screen).to receive(:require).with('io/console').
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
