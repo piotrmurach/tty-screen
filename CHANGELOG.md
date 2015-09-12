@@ -1,4 +1,8 @@
-0.3.0 (Sept 12, 2015)
+0.4.0 (Sept 12, 2015)
+
+* Add terminal color support detection
+
+0.3.0 (Sept 11, 2015)
 
 * Fix bug loading standard library
 
