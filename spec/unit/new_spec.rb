@@ -6,13 +6,13 @@ RSpec.describe TTY::Screen, '.new' do
   let(:output) { StringIO.new('', 'w+') }
 
   it "initializes size and color detection" do
-    allow(TTY::Screen::Color).to receive(:new).with(output: output)
-    allow(TTY::Screen::Size).to receive(:new).with(output: output)
+    allow(TTY::Screen::Color).to receive(:new).with(output: output, verbose: false)
+    allow(TTY::Screen::Size).to receive(:new).with(output: output, verbose: false)
 
     TTY::Screen.new(output: output)
 
-    expect(TTY::Screen::Color).to have_received(:new).with(output: output)
-    expect(TTY::Screen::Size).to have_received(:new).with(output: output)
+    expect(TTY::Screen::Color).to have_received(:new).with(output: output, verbose: false)
+    expect(TTY::Screen::Size).to have_received(:new).with(output: output, verbose: false)
   end
 
   it "delegates size call" do

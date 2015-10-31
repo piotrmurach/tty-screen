@@ -17,9 +17,10 @@ module TTY
     #
     # @api public
     def initialize(options = {})
-      @output = options.fetch(:output) { $stderr }
-      @color  = Color.new(output: @output)
-      @size   = Size.new(output: @output)
+      @output  = options.fetch(:output) { $stderr }
+      @verbose = options.fetch(:verbose) { false }
+      @color   = Color.new(output: @output, verbose: @verbose)
+      @size    = Size.new(output: @output, verbose: @verbose)
     end
 
     # @api public

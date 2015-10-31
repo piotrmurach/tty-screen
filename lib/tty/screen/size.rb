@@ -7,7 +7,8 @@ module TTY
       #
       # @api public
       def initialize(options = {})
-        @output = options.fetch(:output) { $stderr }
+        @output  = options.fetch(:output) { $stderr }
+        @verbose = options.fetch(:verbose) { false }
       end
 
       # Get terminal rows and columns
@@ -57,7 +58,7 @@ module TTY
             false
           end
         rescue LoadError
-          warn 'no native io/console support' if $VERBOSE
+          warn 'no native io/console support' if @verbose
           false
         end
       end

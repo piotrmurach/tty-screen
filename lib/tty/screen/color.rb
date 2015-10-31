@@ -7,7 +7,8 @@ module TTY
       #
       # @api public
       def initialize(options = {})
-        @output = options.fetch(:output) { $stderr }
+        @output  = options.fetch(:output) { $stderr }
+        @verbose = options.fetch(:verbose) { false }
       end
 
       # Detect if terminal supports color
@@ -38,7 +39,7 @@ module TTY
           curses_class.close_screen
         end
       rescue LoadError
-        warn 'no native curses support' if $VERBOSE
+        warn 'no native curses support' if @verbose
         false
       end
 
