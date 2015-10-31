@@ -1,3 +1,11 @@
+0.4.2 (Oct 31, 2015)
+
+* Change visibility of output to prevent warnings
+
+0.4.1 (Oct 31, 2015)
+
+* Change to switch off verbose mode by default
+
 0.4.0 (Sept 12, 2015)
 
 * Add terminal color support detection

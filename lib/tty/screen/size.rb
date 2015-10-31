@@ -122,12 +122,12 @@ module TTY
         ]
       end
 
-      private
-
       # Specifies an output stream object
       #
       # @api public
       attr_reader :output
+
+      private
 
       # Runs command in subprocess
       #
