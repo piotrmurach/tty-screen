@@ -17,11 +17,12 @@ RSpec.describe TTY::Screen::Color, '.supports?' do
     allow(color).to receive(:require).with('curses').
       and_raise(LoadError)
 
-    expect(color.from_curses).to eq(false)
+    expect(color.from_curses).to eq(described_class::NoValue)
   end
 
   it "loads curses for color support" do
     allow(color).to receive(:require).with('curses').and_return(true)
+    stub_const("Curses", Object.new)
     curses = double(:curses)
     allow(curses).to receive(:init_screen)
     allow(curses).to receive(:has_colors?).and_return(true)
