@@ -1,3 +1,9 @@
+0.4.3 (Nov 1, 2015)
+
+* Fix issue with #from_curses method and remove ensure block
+* Add NoValue to Color class to mark failure of reading color value
+* Change Color class supports? to recognize lack of color value
+
 0.4.2 (Oct 31, 2015)
 
 * Change visibility of output to prevent warnings
