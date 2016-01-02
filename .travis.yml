@@ -1,5 +1,8 @@
+---
 language: ruby
-bundler_args: --without yard benchmarks
+sudo: false
+cache: bundler
+bundler_args: --without metrics
 script: "bundle exec rake ci"
 rvm:
   - 1.9.3
