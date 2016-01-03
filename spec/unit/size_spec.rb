@@ -1,6 +1,5 @@
 # coding: utf-8
 
-require 'spec_helper'
 require 'delegate'
 
 RSpec.describe TTY::Screen::Size, '#size' do
