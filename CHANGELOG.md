@@ -1,8 +1,9 @@
 # Change log
 
-## [v0.5.0] - 2016-01-02
+## [v0.5.0] - 2016-01-03
 
 ### Changed
+* Change size to accept environment as input
 * Remove Color detection, available as tty-color gem dependency
 
 ## [v0.4.3] - 2015-11-01
