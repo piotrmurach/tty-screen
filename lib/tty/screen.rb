@@ -18,7 +18,7 @@ module TTY
     def initialize(options = {})
       @output  = options.fetch(:output) { $stderr }
       @verbose = options.fetch(:verbose) { false }
-      @size    = Size.new(output: @output, verbose: @verbose)
+      @size    = Size.new(ENV, output: @output, verbose: @verbose)
     end
 
     # @api public
@@ -36,6 +36,11 @@ module TTY
       size[0]
     end
 
+    # Terminal size as tuple
+    #
+    # @return [Array[Integer]]
+    #
+    # @api public
     def size
       @size.size
     end

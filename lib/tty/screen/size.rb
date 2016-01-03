@@ -6,7 +6,8 @@ module TTY
       # Initialize terminal size detection
       #
       # @api public
-      def initialize(options = {})
+      def initialize(env, options = {})
+        @env     = env
         @output  = options.fetch(:output) { $stderr }
         @verbose = options.fetch(:verbose) { false }
       end
@@ -34,9 +35,7 @@ module TTY
       # @api private
       def from_io_console
         return false if jruby?
-        try_io_console { |size|
-          size if nonzero_column?(size[1])
-        }
+        try_io_console { |size| size if nonzero_column?(size[1]) }
       end
 
       # Attempts to load native console extension
@@ -45,22 +44,20 @@ module TTY
       #
       # @api private
       def try_io_console
-        begin
-          require 'io/console'
+        require 'io/console'
 
-          begin
-            if output.tty? && IO.method_defined?(:winsize)
-              yield output.winsize
-            else
-              false
-            end
-          rescue Errno::EOPNOTSUPP
+        begin
+          if output.tty? && IO.method_defined?(:winsize)
+            yield output.winsize
+          else
             false
           end
-        rescue LoadError
-          warn 'no native io/console support' if @verbose
+        rescue Errno::EOPNOTSUPP
           false
         end
+      rescue LoadError
+        warn 'no native io/console support' if @verbose
+        false
       end
 
       # Detect screen size using Readline
@@ -98,8 +95,8 @@ module TTY
       #
       # @api private
       def from_env
-        return unless ENV['COLUMNS'] =~ /^\d+$/
-        size = [(ENV['LINES'] || ENV['ROWS']).to_i, ENV['COLUMNS'].to_i]
+        return unless @env['COLUMNS'] =~ /^\d+$/
+        size = [(@env['LINES'] || @env['ROWS']).to_i, @env['COLUMNS'].to_i]
         size if nonzero_column?(size[1])
       end
 
@@ -107,7 +104,7 @@ module TTY
       #
       # @api private
       def from_ansicon
-        return unless ENV['ANSICON'] =~ /\((.*)x(.*)\)/
+        return unless @env['ANSICON'] =~ /\((.*)x(.*)\)/
         size = [$2, $1].map(&:to_i)
         size if nonzero_column?(size[1])
       end
@@ -117,8 +114,8 @@ module TTY
       # @api public
       def default_size
         [
-          ENV['LINES'].to_i.nonzero? || 27,
-          ENV['COLUMNS'].to_i.nonzero? || 80
+          @env['LINES'].to_i.nonzero? || 27,
+          @env['COLUMNS'].to_i.nonzero? || 80
         ]
       end
 
