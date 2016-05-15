@@ -1,10 +1,11 @@
-# TTY::Screen
+# TTY::Screen [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
 [![Gem Version](https://badge.fury.io/rb/tty-screen.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-screen.svg?branch=master)][travis]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/tty-screen/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/piotrmurach/tty-screen/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-screen.svg?branch=master)][inchpages]
 
+[gitter]: https://gitter.im/piotrmurach/tty
 [gem]: http://badge.fury.io/rb/tty-screen
 [travis]: http://travis-ci.org/piotrmurach/tty-screen
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-screen
