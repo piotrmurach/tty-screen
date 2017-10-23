@@ -62,9 +62,10 @@ module TTY
       #
       # @api private
       def from_readline
-        return unless defined?(Readline)
-        size = Readline.get_screen_size
-        size if nonzero_column?(size[1])
+        if defined?(Readline) && Readline.respond_to?(:get_screen_size)
+          size = Readline.get_screen_size
+          size if nonzero_column?(size[1])
+        end
       rescue NotImplementedError
       end
 
