@@ -1,6 +1,8 @@
 # TTY::Screen [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
+
 [![Gem Version](https://badge.fury.io/rb/tty-screen.svg)][gem]
 [![Build Status](https://secure.travis-ci.org/piotrmurach/tty-screen.svg?branch=master)][travis]
+[![Build status](https://ci.appveyor.com/api/projects/status/myjv8kahk1iwrlha?svg=true)][appveyor]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/tty-screen/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/piotrmurach/tty-screen/badge.svg)][coverage]
 [![Inline docs](http://inch-ci.org/github/piotrmurach/tty-screen.svg?branch=master)][inchpages]
@@ -8,6 +10,7 @@
 [gitter]: https://gitter.im/piotrmurach/tty
 [gem]: http://badge.fury.io/rb/tty-screen
 [travis]: http://travis-ci.org/piotrmurach/tty-screen
+[appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-screen
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-screen
 [coverage]: https://coveralls.io/r/piotrmurach/tty-screen
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-screen
@@ -60,6 +63,8 @@ TTY::Screen.height   # => 51
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
 ## Copyright
 
-Copyright (c) 2014-2016 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014-2017 Piotr Murach. See LICENSE for further details.
