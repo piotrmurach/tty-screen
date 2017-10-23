@@ -1,5 +1,3 @@
-# coding: utf-8
-
 module TTY
   class Screen
     class Size

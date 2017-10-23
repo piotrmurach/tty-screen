@@ -1,7 +1,5 @@
-# coding: utf-8
-
-require 'tty/screen/size'
-require 'tty/screen/version'
+require_relative 'screen/size'
+require_relative 'screen/version'
 
 module TTY
   # Used for detecting screen properties
