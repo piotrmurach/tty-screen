@@ -32,7 +32,7 @@ module TTY
       #
       # @api private
       def from_io_console
-        return false if jruby?
+        return if jruby?
         try_io_console { |size| size if nonzero_column?(size[1]) }
       end
 
@@ -47,15 +47,12 @@ module TTY
         begin
           if output.tty? && IO.method_defined?(:winsize)
             yield output.winsize
-          else
-            false
           end
         rescue Errno::EOPNOTSUPP
-          false
+          # no support for winsize on output
         end
       rescue LoadError
-        warn 'no native io/console support' if @verbose
-        false
+        warn 'no native io/console support or io-console gem' if @verbose
       end
 
       # Detect screen size using Readline
