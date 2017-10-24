@@ -26,7 +26,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
     it "doesn't calculate size if jruby " do
       screen = described_class.new({})
       allow(screen).to receive(:jruby?).and_return(true)
-      expect(screen.from_io_console).to eq(false)
+      expect(screen.from_io_console).to eq(nil)
     end
 
     it "calcualtes the size" do
@@ -47,7 +47,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
       allow(screen).to receive(:jruby?).and_return(false)
       allow(screen).to receive(:require).with('io/console').
         and_raise(LoadError)
-      expect(screen.from_io_console).to eq(false)
+      expect(screen.from_io_console).to eq(nil)
     end
 
     it "doesn't calculate size if it is run without a console" do
@@ -57,7 +57,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
-      expect(screen.from_io_console).to eq(false)
+      expect(screen.from_io_console).to eq(nil)
     end
   end
 
