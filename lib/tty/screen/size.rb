@@ -125,13 +125,25 @@ module TTY
 
       private
 
-      # Runs command in subprocess
+      # Runs command silently capturing the output
       #
       # @api private
-      def run_command(command, *args)
-        `#{command} #{args.join(' ')} 2>/dev/null`
+      def run_command(*args)
+        require 'tempfile'
+        out = Tempfile.new('tty-screen')
+        result = system(*args, out: out.path)
+        return if result.nil?
+        out.rewind
+        out.read
+      ensure
+        out.close if out
       end
 
+      # Check if number is non zero
+      #
+      # return [Boolean]
+      #
+      # @api private
       def nonzero_column?(column)
         column.to_i > 0
       end
