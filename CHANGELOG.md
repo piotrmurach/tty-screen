@@ -1,5 +1,15 @@
 # Change log
 
+## [v0.5.1] - 2017-10-xx
+
+### Changed
+* Change #from_io_console to return nil when no size present
+* Change #run_command to silently ignore any errors
+
+### Fixed
+* Fix #from_readline check to prevent from failing on missing api call
+* Fix #run_command to correctly capture command output and fix #from_tput check
+
 ## [v0.5.0] - 2016-01-03
 
 ### Changed
@@ -45,6 +55,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.5.1]: https://github.com/peter-murach/tty-screen/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/peter-murach/tty-screen/compare/v0.4.3...v0.5.0
 [v0.4.3]: https://github.com/peter-murach/tty-screen/compare/v0.4.2...v0.4.3
 [v0.4.2]: https://github.com/peter-murach/tty-screen/compare/v0.4.1...v0.4.2
