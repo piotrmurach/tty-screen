@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 if RUBY_VERSION > '1.9' and (ENV['COVERAGE'] || ENV['TRAVIS'])
   require 'simplecov'
   require 'coveralls'

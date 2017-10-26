@@ -1,5 +1,3 @@
-# encoding: utf-8
-
 RSpec.describe TTY::Screen, '.new' do
 
   it "initializses size with defaults" do

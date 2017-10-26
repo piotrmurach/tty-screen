@@ -1,5 +1,3 @@
-# coding: utf-8
-
 require 'delegate'
 
 RSpec.describe TTY::Screen::Size, '#size' do
