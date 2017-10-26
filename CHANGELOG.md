@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.5.1] - 2017-10-xx
+## [v0.5.1] - 2017-10-26
 
 ### Changed
 * Change #from_io_console to return nil when no size present
@@ -8,6 +8,7 @@
 
 ### Fixed
 * Fix #from_readline check to prevent from failing on missing api call
+* Fix #from_stty to only extract size when stty command returns output
 * Fix #run_command to correctly capture command output and fix #from_tput check
 
 ## [v0.5.0] - 2016-01-03
