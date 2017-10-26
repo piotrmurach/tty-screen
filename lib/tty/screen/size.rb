@@ -82,7 +82,9 @@ module TTY
       # @api private
       def from_stty
         return unless output.tty?
-        size = run_command('stty', 'size').split.map(&:to_i)
+        out = run_command('stty', 'size')
+        return unless out
+        size = out.split.map(&:to_i)
         size if nonzero_column?(size[1])
       rescue Errno::ENOENT
       end
