@@ -1,7 +1,5 @@
-# coding: utf-8
-
 module TTY
   class Screen
-    VERSION = "0.5.0"
+    VERSION = "0.5.1"
   end # Screen
 end # TTY
