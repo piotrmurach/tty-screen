@@ -1,5 +1,14 @@
 # Change log
 
+## [v0.6.0] - 2017-11-xx
+
+### Added
+* Add #from_ioctl check for reading terminal size with Unix ioctl
+
+### Changed
+* Remove #try_io_console and inline with io-console check
+* Remove #default_size and replace with constant
+
 ## [v0.5.1] - 2017-10-26
 
 ### Changed
@@ -56,6 +65,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.6.0]: https://github.com/peter-murach/tty-screen/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/peter-murach/tty-screen/compare/v0.5.0...v0.5.1
 [v0.5.0]: https://github.com/peter-murach/tty-screen/compare/v0.4.3...v0.5.0
 [v0.4.3]: https://github.com/peter-murach/tty-screen/compare/v0.4.2...v0.4.3
