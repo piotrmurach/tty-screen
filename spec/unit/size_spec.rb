@@ -17,6 +17,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
   context 'size' do
     it "correctly falls through choices" do
       screen = described_class.new({}, output: output)
+      allow(screen).to receive(:from_java).and_return(nil)
       allow(screen).to receive(:from_io_console).and_return([51, 280])
       allow(screen).to receive(:from_readline).and_return(nil)
 
@@ -39,7 +40,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
       end
       terminal = double(:terminal, get_height: 51, get_width: 211)
       factory = double(:factory, get: terminal)
-      described_class.const_set('TerminalFactory', factory)
+      stub_const("TTY::Screen::Size::TerminalFactory", factory)
 
       allow(screen).to receive(:jruby?).and_return(true)
       allow(screen).to receive(:require).with('java').and_return(true)
@@ -91,6 +92,7 @@ RSpec.describe TTY::Screen::Size, '#size' do
   context "from ioctl" do
     it "reads terminal size" do
       screen = described_class.new({}, output: output)
+      allow(screen).to receive(:jruby?).and_return(false)
       expect(screen.from_ioctl).to eq([51, 211])
     end
 
