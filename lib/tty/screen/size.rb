@@ -24,7 +24,8 @@ module TTY
       #
       # @api public
       def size
-        size =   from_io_console
+        size = from_java
+        size ||= from_io_console
         size ||= from_ioctl
         size ||= from_readline
         size ||= from_tput
@@ -32,6 +33,21 @@ module TTY
         size ||= from_env
         size ||= from_ansicon
         size ||  DEFAULT_SIZE
+      end
+
+      # Determine terminal size on jruby using native Java libs
+      #
+      # @return [nil, Array[Integer, Integer]]
+      #
+      # @api private
+      def from_java
+        return unless jruby?
+        require 'java'
+        java_import 'jline.TerminalFactory'
+        terminal = TerminalFactory.get
+        [terminal.get_height, terminal.get_width]
+      rescue
+        warn 'failed to import java terminal package' if @verbose
       end
 
       # Detect screen size by loading io/console lib

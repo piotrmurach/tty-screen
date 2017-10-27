@@ -25,6 +25,30 @@ RSpec.describe TTY::Screen::Size, '#size' do
     end
   end
 
+  context "from java" do
+    it "doesn't import java on non-jruby platform" do
+      screen = described_class.new({})
+      allow(screen).to receive(:jruby?).and_return(false)
+      expect(screen.from_java).to eq(nil)
+    end
+
+    it "imports java library on jruby" do
+      screen = described_class.new({})
+      class << screen
+        def java_import(*args); end
+      end
+      terminal = double(:terminal, get_height: 51, get_width: 211)
+      factory = double(:factory, get: terminal)
+      described_class.const_set('TerminalFactory', factory)
+
+      allow(screen).to receive(:jruby?).and_return(true)
+      allow(screen).to receive(:require).with('java').and_return(true)
+      allow(screen).to receive(:java_import)
+
+      expect(screen.from_java).to eq([51, 211])
+    end
+  end
+
   context 'from io console' do
     it "doesn't calculate size if jruby " do
       screen = described_class.new({})
