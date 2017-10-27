@@ -69,6 +69,12 @@ RSpec.describe TTY::Screen::Size, '#size' do
       screen = described_class.new({}, output: output)
       expect(screen.from_ioctl).to eq([51, 211])
     end
+
+    it "skips reading on jruby" do
+      screen = described_class.new({})
+      allow(screen).to receive(:jruby?).and_return(true)
+      expect(screen.from_ioctl).to eq(nil)
+    end
   end
 
   context 'from tput' do

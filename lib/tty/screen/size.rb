@@ -64,6 +64,7 @@ module TTY
       #
       # @api private
       def from_ioctl
+        return if jruby?
         return unless output.respond_to?(:ioctl)
 
         buffer = [0, 0, 0, 0].pack('SSSS')
