@@ -83,9 +83,10 @@ module TTY
         return if jruby?
         return unless output.respond_to?(:ioctl)
 
-        buffer = [0, 0, 0, 0].pack('SSSS')
+        format = 'SSSS'
+        buffer = ([0] * format.size).pack(format)
         if ioctl?(TIOCGWINSZ, buffer) || ioctl?(TIOCGWINSZ_PPC, buffer)
-          rows, cols, = buffer.unpack('SSSS')[0..1]
+          rows, cols, = buffer.unpack(format)[0..1]
           return [rows, cols]
         end
       end
