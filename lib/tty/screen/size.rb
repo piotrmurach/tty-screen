@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TTY
   class Screen
     class Size
@@ -54,7 +56,7 @@ module TTY
       end
 
       TIOCGWINSZ = 0x5413
-      TIOCGWINSZ_PPC =0x40087468
+      TIOCGWINSZ_PPC = 0x40087468
 
       # Read terminal size from Unix ioctl
       #
@@ -64,9 +66,9 @@ module TTY
       def from_ioctl
         return unless output.respond_to?(:ioctl)
 
-        buffer = [0,0,0,0].pack("SSSS")
+        buffer = [0, 0, 0, 0].pack('SSSS')
         if ioctl?(TIOCGWINSZ, buffer) || ioctl?(TIOCGWINSZ_PPC, buffer)
-          rows, cols, _ = buffer.unpack("SSSS")[0..1]
+          rows, cols, = buffer.unpack('SSSS')[0..1]
           return [rows, cols]
         end
       end
