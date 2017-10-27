@@ -18,6 +18,7 @@ module TTY
       # @api public
       def size
         size =   from_io_console
+        size ||= from_ioctl
         size ||= from_readline
         size ||= from_tput
         size ||= from_stty
@@ -53,6 +54,34 @@ module TTY
         end
       rescue LoadError
         warn 'no native io/console support or io-console gem' if @verbose
+      end
+
+      TIOCGWINSZ = 0x5413
+      TIOCGWINSZ_PPC =0x40087468
+
+      # Read terminal size from Unix ioctl
+      #
+      # @return [nil, Array[Integer, Integer]]
+      #
+      # @api private
+      def from_ioctl
+        return unless output.respond_to?(:ioctl)
+
+        buffer = [0,0,0,0].pack("SSSS")
+        if ioctl?(TIOCGWINSZ, buffer) || ioctl?(TIOCGWINSZ_PPC, buffer)
+          rows, cols, _ = buffer.unpack("SSSS")[0..1]
+          return [rows, cols]
+        end
+      end
+
+      def ioctl?(control, buf)
+        output.ioctl(control, buf) >= 0
+      rescue Errno::ENOTTY
+        # wrong processor architecture
+        false
+      rescue Errno::EINVAL
+        # ioctl failed to recognise processor type(not Intel)
+        false
       end
 
       # Detect screen size using Readline

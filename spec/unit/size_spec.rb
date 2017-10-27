@@ -5,6 +5,11 @@ RSpec.describe TTY::Screen::Size, '#size' do
     def winsize
       [100, 200]
     end
+
+    def ioctl(control, buf)
+      buf.replace("3\x00\xD3\x00\xF2\x04\xCA\x02\x00")
+      0
+    end
   end
 
   let(:output) { Output.new(StringIO.new('', 'w+')) }
@@ -56,6 +61,13 @@ RSpec.describe TTY::Screen::Size, '#size' do
       allow(output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
       expect(screen.from_io_console).to eq(nil)
+    end
+  end
+
+  context "from ioctl" do
+    it "reads terminal size" do
+      screen = described_class.new({}, output: output)
+      expect(screen.from_ioctl).to eq([51, 211])
     end
   end
 
