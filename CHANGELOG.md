@@ -4,6 +4,7 @@
 
 ### Added
 * Add #from_ioctl check for reading terminal size with Unix ioctl
+* Add #from_java check for reading terminal size from Java on JRuby
 
 ### Changed
 * Remove #try_io_console and inline with io-console check
