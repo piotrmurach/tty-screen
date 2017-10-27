@@ -1,6 +1,11 @@
 module TTY
   class Screen
     class Size
+      # Default terminal size
+      #
+      # @api public
+      DEFAULT_SIZE = [27, 80].freeze
+
       # Initialize terminal size detection
       #
       # @api public
@@ -24,30 +29,22 @@ module TTY
         size ||= from_stty
         size ||= from_env
         size ||= from_ansicon
-        size ||  default_size
+        size ||  DEFAULT_SIZE
       end
 
       # Detect screen size by loading io/console lib
       #
-      # @return [Array[Integer, Integer]]
+      # @return [nil, Array[Integer, Integer]]
       #
       # @api private
       def from_io_console
         return if jruby?
-        try_io_console { |size| size if nonzero_column?(size[1]) }
-      end
-
-      # Attempts to load native console extension
-      #
-      # @return [Boolean, Array]
-      #
-      # @api private
-      def try_io_console
         require 'io/console'
 
         begin
           if output.tty? && IO.method_defined?(:winsize)
-            yield output.winsize
+            size = output.winsize
+            size if nonzero_column?(size[1])
           end
         rescue Errno::EOPNOTSUPP
           # no support for winsize on output
@@ -134,16 +131,6 @@ module TTY
         return unless @env['ANSICON'] =~ /\((.*)x(.*)\)/
         size = [$2, $1].map(&:to_i)
         size if nonzero_column?(size[1])
-      end
-
-      # Default terminal size
-      #
-      # @api public
-      def default_size
-        [
-          @env['LINES'].to_i.nonzero? || 27,
-          @env['COLUMNS'].to_i.nonzero? || 80
-        ]
       end
 
       # Specifies an output stream object
