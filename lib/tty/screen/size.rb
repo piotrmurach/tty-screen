@@ -58,7 +58,7 @@ module TTY
         stdout_handle = get_std_handle.(STDOUT_HANDLE)
 
         get_console_buffer_info.(stdout_handle, buffer)
-        _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
+        _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
         [bottom - top + 1, right - left + 1]
       rescue LoadError
         warn 'no native fiddle module found' if @verbose
