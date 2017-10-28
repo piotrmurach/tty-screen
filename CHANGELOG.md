@@ -8,8 +8,10 @@
 * Add #from_win_api check for reading terminal size from Windows C API
 
 ### Changed
+* Change TTY::Screen to a module without any state
 * Remove #try_io_console and inline with io-console check
 * Remove #default_size and replace with constant
+* Remove TTY::Screen::Size class
 
 ## [v0.5.1] - 2017-10-26
 
