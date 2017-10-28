@@ -1,1 +1,1 @@
-require 'tty/screen'
+require_relative 'tty/screen'
