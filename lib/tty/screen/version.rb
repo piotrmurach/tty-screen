@@ -1,5 +1,5 @@
 module TTY
-  class Screen
+  module Screen
     VERSION = "0.5.1"
   end # Screen
 end # TTY
