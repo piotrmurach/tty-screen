@@ -7,6 +7,12 @@ module TTY
   #
   # @api public
   module Screen
+    # Helper to define private functions
+    def self.private_module_function(name)
+      module_function(name)
+      private_class_method(name)
+    end
+
     # Default terminal size
     #
     # @api public
@@ -246,7 +252,7 @@ module TTY
     ensure
       out.close if out
     end
-    module_function :run_command
+    private_module_function :run_command
 
     # Check if number is non zero
     #
@@ -256,11 +262,11 @@ module TTY
     def nonzero_column?(column)
       column.to_i > 0
     end
-    module_function :nonzero_column?
+    private_module_function :nonzero_column?
 
     def jruby?
       RbConfig::CONFIG['ruby_install_name'] == 'jruby'
     end
-    module_function :jruby?
+    private_module_function :jruby?
   end # Screen
 end # TTY
