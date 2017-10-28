@@ -31,15 +31,15 @@ module TTY
     #
     # @api public
     def size
-      size = from_java
-      size ||= from_win_api
-      size ||= from_ioctl
-      size ||= from_io_console
-      size ||= from_readline
-      size ||= from_tput
-      size ||= from_stty
-      size ||= from_env
-      size ||= from_ansicon
+      size = size_from_java
+      size ||= size_from_win_api
+      size ||= size_from_ioctl
+      size ||= size_from_io_console
+      size ||= size_from_readline
+      size ||= size_from_tput
+      size ||= size_from_stty
+      size ||= size_from_env
+      size ||= size_from_ansicon
       size ||  DEFAULT_SIZE
     end
     module_function :size
@@ -71,7 +71,7 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def from_win_api(verbose: nil)
+    def size_from_win_api(verbose: nil)
       require 'fiddle'
 
       kernel32 = Fiddle::Handle.new('kernel32')
@@ -93,14 +93,14 @@ module TTY
     rescue Fiddle::DLError
       # non windows platform or no kernel32 lib
     end
-    module_function :from_win_api
+    module_function :size_from_win_api
 
     # Determine terminal size on jruby using native Java libs
     #
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def from_java(verbose: nil)
+    def size_from_java(verbose: nil)
       return unless jruby?
       require 'java'
       java_import 'jline.TerminalFactory'
@@ -109,7 +109,7 @@ module TTY
     rescue
       warn 'failed to import java terminal package' if verbose
     end
-    module_function :from_java
+    module_function :size_from_java
 
     # Detect screen size by loading io/console lib
     #
@@ -120,7 +120,7 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def from_io_console(verbose: nil)
+    def size_from_io_console(verbose: nil)
       return if jruby?
       require 'io/console'
 
@@ -135,7 +135,7 @@ module TTY
     rescue LoadError
       warn 'no native io/console support or io-console gem' if verbose
     end
-    module_function :from_io_console
+    module_function :size_from_io_console
 
     TIOCGWINSZ = 0x5413
     TIOCGWINSZ_PPC = 0x40087468
@@ -145,7 +145,7 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def from_ioctl
+    def size_from_ioctl
       return if jruby?
       return unless @output.respond_to?(:ioctl)
 
@@ -156,7 +156,7 @@ module TTY
         return [rows, cols]
       end
     end
-    module_function :from_ioctl
+    module_function :size_from_ioctl
 
     def ioctl?(control, buf)
       @output.ioctl(control, buf) >= 0
@@ -172,31 +172,31 @@ module TTY
     # Detect screen size using Readline
     #
     # @api private
-    def from_readline
+    def size_from_readline
       if defined?(Readline) && Readline.respond_to?(:get_screen_size)
         size = Readline.get_screen_size
         size if nonzero_column?(size[1])
       end
     rescue NotImplementedError
     end
-    module_function :from_readline
+    module_function :size_from_readline
 
     # Detect terminal size from tput utility
     #
     # @api private
-    def from_tput
+    def size_from_tput
       return unless @output.tty?
       lines = run_command('tput', 'lines').to_i
       cols  = run_command('tput', 'cols').to_i
       [lines, cols] if nonzero_column?(lines)
     rescue Errno::ENOENT
     end
-    module_function :from_tput
+    module_function :size_from_tput
 
     # Detect terminal size from stty utility
     #
     # @api private
-    def from_stty
+    def size_from_stty
       return unless @output.tty?
       out = run_command('stty', 'size')
       return unless out
@@ -204,7 +204,7 @@ module TTY
       size if nonzero_column?(size[1])
     rescue Errno::ENOENT
     end
-    module_function :from_stty
+    module_function :size_from_stty
 
     # Detect terminal size from environment
     #
@@ -216,22 +216,22 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def from_env
+    def size_from_env
       return unless @env['COLUMNS'] =~ /^\d+$/
       size = [(@env['LINES'] || @env['ROWS']).to_i, @env['COLUMNS'].to_i]
       size if nonzero_column?(size[1])
     end
-    module_function :from_env
+    module_function :size_from_env
 
     # Detect terminal size from Windows ANSICON
     #
     # @api private
-    def from_ansicon
+    def size_from_ansicon
       return unless @env['ANSICON'] =~ /\((.*)x(.*)\)/
       size = [$2, $1].map(&:to_i)
       size if nonzero_column?(size[1])
     end
-    module_function :from_ansicon
+    module_function :size_from_ansicon
 
     # Runs command silently capturing the output
     #
