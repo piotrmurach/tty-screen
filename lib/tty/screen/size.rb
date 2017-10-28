@@ -48,10 +48,10 @@ module TTY
 
         kernel32 = Fiddle::Handle.new('kernel32')
         get_std_handle = Fiddle::Function.new(kernel32['GetStdHandle'],
-                          [Fiddle::TYPE_LONG], Fiddle::TYPE_LONG)
+                          [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
         get_console_buffer_info = Fiddle::Function.new(
           kernel32['GetConsoleScreenBufferInfo'],
-          [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], TYPE_INT)
+          [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT)
 
         format        = 'SSSSSssssSS'
         buffer        = ([0] * format.size).pack(format)
