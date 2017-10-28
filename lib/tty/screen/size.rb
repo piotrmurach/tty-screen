@@ -27,12 +27,43 @@ module TTY
         size = from_java
         size ||= from_io_console
         size ||= from_ioctl
+        size ||= from_win_api
         size ||= from_readline
         size ||= from_tput
         size ||= from_stty
         size ||= from_env
         size ||= from_ansicon
         size ||  DEFAULT_SIZE
+      end
+
+      STDOUT_HANDLE = 0xFFFFFFF5
+
+      # Determine terminal size with a Windows native API
+      #
+      # @return [nil, Array[Integer, Integer]]
+      #
+      # @api private
+      def from_win_api
+        require 'fiddle'
+
+        kernel32 = Fiddle::Handle.new('kernel32')
+        get_std_handle = Fiddle::Function.new(kernel32['GetStdHandle'],
+                          [Fiddle::TYPE_LONG], Fiddle::TYPE_LONG)
+        get_console_buffer_info = Fiddle::Function.new(
+          kernel32['GetConsoleScreenBufferInfo'],
+          [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], TYPE_INT)
+
+        format        = 'SSSSSssssSS'
+        buffer        = ([0] * format.size).pack(format)
+        stdout_handle = get_std_handle.(STDOUT_HANDLE)
+
+        get_console_buffer_info.(stdout_handle, buffer)
+        _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
+        [bottom - top + 1, right - left + 1]
+      rescue LoadError
+        warn 'no native fiddle module found' if @verbose
+      rescue Fiddle::DLError
+        # non windows platform or no kernel32 lib
       end
 
       # Determine terminal size on jruby using native Java libs
