@@ -17,7 +17,7 @@
 
 > Terminal screen size detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
 
-**TTY::Screen** provides independent screen size detection component for [TTY](https://github.com/piotrmurach/tty) toolkit.
+**TTY::Screen** provides independent terminal screen size detection component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
 ## Installation
 
@@ -40,19 +40,23 @@ Or install it yourself as:
 **TTY::Screen** allows you to detect terminal screen size by calling `size` method which returns [height, width] tuple.
 
 ```ruby
-screen = TTY::Screen.new
-
-screen.size     # => [51, 280]
-screen.width    # => 280
-screen.height   # => 51
+TTY::Screen.size     # => [51, 280]
 ```
 
-You can also use above methods as class instance methods:
+To read terminal width do:
 
 ```ruby
-TTY::Screen.size     # => [51, 280]
 TTY::Screen.width    # => 280
+TTY::Screen.columns  # => 280
+TTY::Screen.cols     # => 280
+```
+
+Similarly, to read terminal height do:
+
+```ruby
 TTY::Screen.height   # => 51
+TTY::Screen.rows     # => 51
+TTY::Screen.lines    # => 51
 ```
 
 ## Contributing
