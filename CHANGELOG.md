@@ -3,12 +3,13 @@
 ## [v0.6.0] - 2017-11-xx
 
 ### Added
-* Add #from_ioctl check for reading terminal size with Unix ioctl
-* Add #from_java check for reading terminal size from Java on JRuby
-* Add #from_win_api check for reading terminal size from Windows C API
+* Add #size_from_ioctl check for reading terminal size with Unix ioctl
+* Add #size_from_java check for reading terminal size from Java on JRuby
+* Add #size_from_win_api check for reading terminal size from Windows C API
 
 ### Changed
 * Change TTY::Screen to a module without any state
+* Change to prefix all checks with `size` keyword
 * Remove #try_io_console and inline with io-console check
 * Remove #default_size and replace with constant
 * Remove TTY::Screen::Size class
