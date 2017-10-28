@@ -83,6 +83,10 @@ module TTY
 
       # Detect screen size by loading io/console lib
       #
+      # On Windows io_console falls back to reading environment
+      # variables. This means any user changes to the terminal
+      # size won't be reflected in the runtime of the Ruby app.
+      #
       # @return [nil, Array[Integer, Integer]]
       #
       # @api private
@@ -168,6 +172,13 @@ module TTY
 
       # Detect terminal size from environment
       #
+      # After executing Ruby code if the user changes terminal
+      # dimensions during code runtime, the code won't be notified,
+      # and hence won't see the new dimensions reflected in its copy
+      # of LINES and COLUMNS environment variables.
+      #
+      # @return [nil, Array[Integer, Integer]]
+      #
       # @api private
       def from_env
         return unless @env['COLUMNS'] =~ /^\d+$/
@@ -175,7 +186,7 @@ module TTY
         size if nonzero_column?(size[1])
       end
 
-      # Detect terminal size on windows
+      # Detect terminal size from Windows ANSICON
       #
       # @api private
       def from_ansicon
