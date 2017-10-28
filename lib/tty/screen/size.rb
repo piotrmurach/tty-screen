@@ -25,9 +25,9 @@ module TTY
       # @api public
       def size
         size = from_java
-        size ||= from_io_console
-        size ||= from_ioctl
         size ||= from_win_api
+        size ||= from_ioctl
+        size ||= from_io_console
         size ||= from_readline
         size ||= from_tput
         size ||= from_stty

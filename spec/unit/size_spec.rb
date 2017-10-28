@@ -18,10 +18,15 @@ RSpec.describe TTY::Screen::Size, '#size' do
     it "correctly falls through choices" do
       screen = described_class.new({}, output: output)
       allow(screen).to receive(:from_java).and_return(nil)
+      allow(screen).to receive(:from_win_api).and_return(nil)
+      allow(screen).to receive(:from_ioctl).and_return(nil)
       allow(screen).to receive(:from_io_console).and_return([51, 280])
       allow(screen).to receive(:from_readline).and_return(nil)
 
       expect(screen.size).to eq([51, 280])
+      expect(screen).to have_received(:from_java)
+      expect(screen).to have_received(:from_win_api)
+      expect(screen).to have_received(:from_ioctl)
       expect(screen).to_not have_received(:from_readline)
     end
   end
