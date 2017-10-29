@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.6.0] - 2017-11-xx
+## [v0.6.0] - 2017-10-29
 
 ### Added
 * Add #size_from_ioctl check for reading terminal size with Unix ioctl
@@ -10,6 +10,7 @@
 ### Changed
 * Change TTY::Screen to a module without any state
 * Change to prefix all checks with `size` keyword
+* Change gemspec to require ruby >= 2.0.0
 * Remove #try_io_console and inline with io-console check
 * Remove #default_size and replace with constant
 * Remove TTY::Screen::Size class
