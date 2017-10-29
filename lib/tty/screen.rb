@@ -93,7 +93,8 @@ module TTY
 
       get_console_buffer_info.(stdout_handle, buffer)
       _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
-      [bottom - top + 1, right - left + 1]
+      size = [bottom - top + 1, right - left + 1]
+      return size if nonzero_column?(size[1] - 1)
     rescue LoadError
       warn 'no native fiddle module found' if verbose
     rescue Fiddle::DLError
