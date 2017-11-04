@@ -1,5 +1,11 @@
 # Change log
 
+## [v0.6.2] - 2017-11-04
+
+### Fixed
+* Fix #size_from_java to provide size only for non-zero values
+* Fix #size_from_ioctl to provide size only for non-zero values
+
 ## [v0.6.1] - 2017-10-29
 
 ### Fixed
@@ -76,6 +82,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.6.2]: https://github.com/peter-murach/tty-screen/compare/v0.6.1...v0.6.2
 [v0.6.1]: https://github.com/peter-murach/tty-screen/compare/v0.6.0...v0.6.1
 [v0.6.0]: https://github.com/peter-murach/tty-screen/compare/v0.5.1...v0.6.0
 [v0.5.1]: https://github.com/peter-murach/tty-screen/compare/v0.5.0...v0.5.1
