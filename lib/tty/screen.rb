@@ -166,13 +166,12 @@ module TTY
     end
     module_function :size_from_ioctl
 
+    # Check if ioctl can be called and the device is attached to terminal
+    #
+    # @api private
     def ioctl?(control, buf)
       @output.ioctl(control, buf) >= 0
-    rescue Errno::ENOTTY
-      # wrong processor architecture
-      false
-    rescue Errno::EINVAL
-      # ioctl failed to recognise processor type(not Intel)
+    rescue SystemCallError
       false
     end
     module_function :ioctl?
