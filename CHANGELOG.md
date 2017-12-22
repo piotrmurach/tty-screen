@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.6.4] - 2017-12-22
+
+### Fixed
+* Fix to suppress stderr output from run_command by Tero Marttila(@SpComb)
+
 ## [v0.6.3] - 2017-11-22
 
 ### Changed
@@ -90,6 +95,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.6.4]: https://github.com/peter-murach/tty-screen/compare/v0.6.3...v0.6.4
 [v0.6.3]: https://github.com/peter-murach/tty-screen/compare/v0.6.2...v0.6.3
 [v0.6.2]: https://github.com/peter-murach/tty-screen/compare/v0.6.1...v0.6.2
 [v0.6.1]: https://github.com/peter-murach/tty-screen/compare/v0.6.0...v0.6.1
