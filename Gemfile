@@ -4,7 +4,7 @@ gemspec
 
 group :development do
   gem 'rspec',   '~> 3.7.0'
-  gem 'yard',    '~> 0.9.9'
+  gem 'yard',    '~> 0.9.12'
 end
 
 group :metrics do
