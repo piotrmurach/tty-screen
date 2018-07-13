@@ -1,6 +1,6 @@
 # fronzen_string_literal: true
 
-require_relative 'version'
+require_relative 'screen/version'
 
 module TTY
   # Used for detecting screen properties
