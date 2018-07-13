@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.6.5] - 2018-07-13
+
+### Changed
+* Change to namespace version file to allow for direct vendoring
+
 ## [v0.6.4] - 2017-12-22
 
 ### Fixed
@@ -95,17 +100,18 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
-[v0.6.4]: https://github.com/peter-murach/tty-screen/compare/v0.6.3...v0.6.4
-[v0.6.3]: https://github.com/peter-murach/tty-screen/compare/v0.6.2...v0.6.3
-[v0.6.2]: https://github.com/peter-murach/tty-screen/compare/v0.6.1...v0.6.2
-[v0.6.1]: https://github.com/peter-murach/tty-screen/compare/v0.6.0...v0.6.1
-[v0.6.0]: https://github.com/peter-murach/tty-screen/compare/v0.5.1...v0.6.0
-[v0.5.1]: https://github.com/peter-murach/tty-screen/compare/v0.5.0...v0.5.1
-[v0.5.0]: https://github.com/peter-murach/tty-screen/compare/v0.4.3...v0.5.0
-[v0.4.3]: https://github.com/peter-murach/tty-screen/compare/v0.4.2...v0.4.3
-[v0.4.2]: https://github.com/peter-murach/tty-screen/compare/v0.4.1...v0.4.2
-[v0.4.1]: https://github.com/peter-murach/tty-screen/compare/v0.4.0...v0.4.1
-[v0.4.0]: https://github.com/peter-murach/tty-screen/compare/v0.3.0...v0.4.0
-[v0.3.0]: https://github.com/peter-murach/tty-screen/compare/v0.2.0...v0.3.0
-[v0.2.0]: https://github.com/peter-murach/tty-screen/compare/v0.1.0...v0.2.0
-[v0.1.0]: https://github.com/peter-murach/tty-screen/compare/v0.1.0
+[v0.6.5]: https://github.com/piotrmurach/tty-screen/compare/v0.6.4...v0.6.5
+[v0.6.4]: https://github.com/piotrmurach/tty-screen/compare/v0.6.3...v0.6.4
+[v0.6.3]: https://github.com/piotrmurach/tty-screen/compare/v0.6.2...v0.6.3
+[v0.6.2]: https://github.com/piotrmurach/tty-screen/compare/v0.6.1...v0.6.2
+[v0.6.1]: https://github.com/piotrmurach/tty-screen/compare/v0.6.0...v0.6.1
+[v0.6.0]: https://github.com/piotrmurach/tty-screen/compare/v0.5.1...v0.6.0
+[v0.5.1]: https://github.com/piotrmurach/tty-screen/compare/v0.5.0...v0.5.1
+[v0.5.0]: https://github.com/piotrmurach/tty-screen/compare/v0.4.3...v0.5.0
+[v0.4.3]: https://github.com/piotrmurach/tty-screen/compare/v0.4.2...v0.4.3
+[v0.4.2]: https://github.com/piotrmurach/tty-screen/compare/v0.4.1...v0.4.2
+[v0.4.1]: https://github.com/piotrmurach/tty-screen/compare/v0.4.0...v1.4.1
+[v0.4.0]: https://github.com/piotrmurach/tty-screen/compare/v0.3.0...v0.4.0
+[v0.3.0]: https://github.com/piotrmurach/tty-screen/compare/v0.2.0...v0.3.0
+[v0.2.0]: https://github.com/piotrmurach/tty-screen/compare/v0.1.0...v0.2.0
+[v0.1.0]: https://github.com/piotrmurach/tty-screen/compare/v0.1.0
