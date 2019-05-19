@@ -1,5 +1,11 @@
 # Change log
 
+## [v0.7.0] - 2019-05-19
+
+### Changed
+* Change gemspec to load files directly without using git
+* Change to relax development dependencies
+
 ## [v0.6.5] - 2018-07-13
 
 ### Changed
@@ -100,6 +106,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.7.0]: https://github.com/piotrmurach/tty-screen/compare/v0.6.5...v0.7.0
 [v0.6.5]: https://github.com/piotrmurach/tty-screen/compare/v0.6.4...v0.6.5
 [v0.6.4]: https://github.com/piotrmurach/tty-screen/compare/v0.6.3...v0.6.4
 [v0.6.3]: https://github.com/piotrmurach/tty-screen/compare/v0.6.2...v0.6.3
