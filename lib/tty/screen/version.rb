@@ -2,6 +2,6 @@
 
 module TTY
   module Screen
-    VERSION = '0.7.0'.freeze
+    VERSION = "0.7.1"
   end # Screen
 end # TTY
