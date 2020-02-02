@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.7.1] - 2020-02-02
+
+### Changed
+* Change gemspec to add metadata, remove test artifacts and load version directly
+
 ## [v0.7.0] - 2019-05-19
 
 ### Changed
@@ -106,6 +111,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.7.1]: https://github.com/piotrmurach/tty-screen/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/piotrmurach/tty-screen/compare/v0.6.5...v0.7.0
 [v0.6.5]: https://github.com/piotrmurach/tty-screen/compare/v0.6.4...v0.6.5
 [v0.6.4]: https://github.com/piotrmurach/tty-screen/compare/v0.6.3...v0.6.4
