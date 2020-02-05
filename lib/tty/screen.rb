@@ -265,6 +265,11 @@ module TTY
     end
     private_module_function :nonzero_column?
 
+    def windows?
+      RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+    end
+    private_module_function :windows?
+
     def jruby?
       RbConfig::CONFIG['ruby_install_name'] == 'jruby'
     end
