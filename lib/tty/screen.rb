@@ -13,6 +13,13 @@ module TTY
       private_class_method(name)
     end
 
+    # Helper to load dependency
+    def self.load_dep(name, message, verbose: false)
+      require(name)
+    rescue LoadError
+      warn(message) if verbose
+    end
+
     # Default terminal size
     #
     # @api public
