@@ -10,6 +10,6 @@ gem "yardstick", "~> 0.9.9"
 if RUBY_VERSION.split(".")[1].to_i > 0
   gem "rspec-benchmark", git: "https://github.com/piotrmurach/rspec-benchmark"
 end
-if RUBY_VERSION.split(".")[1].to_i > 3
+if RUBY_VERSION.split(".")[1].to_i > 3 && !(/jruby/ =~ ::RUBY_PLATFORM)
   gem "io-console"
 end
