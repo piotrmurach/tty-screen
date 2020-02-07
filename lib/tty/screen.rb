@@ -78,7 +78,9 @@ module TTY
     #
     # @api private
     def size_from_win_api(verbose: nil)
-      require 'fiddle'
+      return unless windows?
+
+      require 'fiddle' unless defined?(Fiddle)
 
       kernel32 = Fiddle::Handle.new('kernel32')
       get_std_handle = Fiddle::Function.new(kernel32['GetStdHandle'],

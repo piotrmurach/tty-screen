@@ -36,6 +36,16 @@ RSpec.describe TTY::Screen, '#size' do
     end
   end
 
+  context "size from windows api" do
+    it "doesn't check size on non-windows platform" do
+      screen = TTY::Screen
+      allow(screen).to receive(:windows?).and_return(false)
+
+      expect(screen.size_from_win_api).to eq(nil)
+      expect(screen).to have_received(:windows?).once
+    end
+  end
+
   context "size from java" do
     it "doesn't import java on non-jruby platform" do
       screen = TTY::Screen
