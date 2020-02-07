@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+begin
+  require "rbconfig"
+rescue LoadError
+end
+
 require_relative 'screen/version'
 
 module TTY
