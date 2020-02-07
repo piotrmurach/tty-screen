@@ -273,8 +273,11 @@ module TTY
     end
     private_module_function :windows?
 
-    def jruby?
-      RbConfig::CONFIG['ruby_install_name'] == 'jruby'
+    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_PLATFORM)
+    when /jruby/
+      def jruby?; true end
+    else
+      def jruby?; false end
     end
     private_module_function :jruby?
   end # Screen
