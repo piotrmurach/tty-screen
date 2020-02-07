@@ -87,7 +87,9 @@ module TTY
     def size_from_win_api(verbose: nil)
       return unless windows?
 
-      require 'fiddle' unless defined?(Fiddle)
+      unless defined?(Fiddle)
+        load_dep("fiddle", "no native fiddle module found", verbose: verbose)
+      end
 
       kernel32 = Fiddle::Handle.new('kernel32')
       get_std_handle = Fiddle::Function.new(kernel32['GetStdHandle'],
@@ -104,8 +106,6 @@ module TTY
       _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
       size = [bottom - top + 1, right - left + 1]
       return size if nonzero_column?(size[1] - 1)
-    rescue LoadError
-      warn 'no native fiddle module found' if verbose
     rescue Fiddle::DLError
       # non windows platform or no kernel32 lib
     end
@@ -139,18 +139,17 @@ module TTY
     # @api private
     def size_from_io_console(verbose: nil)
       return if jruby?
-      require 'io/console'
 
-      begin
-        if @output.tty? && IO.method_defined?(:winsize)
-          size = @output.winsize
-          size if nonzero_column?(size[1])
-        end
-      rescue Errno::EOPNOTSUPP
-        # no support for winsize on output
+      load_dep("io/console",
+               "no native io/console support or io-console gem",
+               verbose: verbose)
+
+      if @output.tty? && IO.method_defined?(:winsize)
+        size = @output.winsize
+        size if nonzero_column?(size[1])
       end
-    rescue LoadError
-      warn 'no native io/console support or io-console gem' if verbose
+    rescue Errno::EOPNOTSUPP
+      # no support for winsize on output
     end
     module_function :size_from_io_console
 
