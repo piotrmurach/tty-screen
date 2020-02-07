@@ -98,8 +98,8 @@ RSpec.describe TTY::Screen, '#size' do
     it "doesn't calculate size if io/console not available" do
       screen = TTY::Screen
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(screen).to receive(:require).with('io/console').
-        and_raise(LoadError)
+      allow(screen).to receive(:require).with('io/console').and_raise(LoadError)
+
       expect(screen.size_from_io_console).to eq(nil)
     end
 
