@@ -265,8 +265,11 @@ module TTY
     end
     private_module_function :nonzero_column?
 
-    def windows?
-      RbConfig::CONFIG['host_os'] =~ /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["host_os"] : ::RUBY_PLATFORM)
+    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      def windows?; true end
+    else
+      def windows?; false end
     end
     private_module_function :windows?
 
