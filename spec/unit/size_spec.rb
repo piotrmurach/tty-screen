@@ -117,11 +117,13 @@ RSpec.describe TTY::Screen, '#size' do
   context "from ioctl" do
     it "reads terminal size" do
       screen = TTY::Screen
-      old_output = screen.output
-      screen.output = output
+      original_stdout = $stdout
+      $stdout = output
       allow(screen).to receive(:jruby?).and_return(false)
+
       expect(screen.size_from_ioctl).to eq([51, 211])
-      screen.output = old_output
+
+      $stdout = original_stdout
     end
 
     it "skips reading on jruby" do

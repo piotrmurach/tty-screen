@@ -158,8 +158,9 @@ module TTY
     end
     module_function :size_from_io_console
 
-    TIOCGWINSZ = 0x5413
-    TIOCGWINSZ_PPC = 0x40087468
+    TIOCGWINSZ = 0x5413 # linux
+    TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
+    TIOCGWINSZ_SOL = 0x5468 # solaris
 
     # Read terminal size from Unix ioctl
     #
@@ -172,18 +173,27 @@ module TTY
 
       format = 'SSSS'
       buffer = ([0] * format.size).pack(format)
-      if ioctl?(TIOCGWINSZ, buffer) || ioctl?(TIOCGWINSZ_PPC, buffer)
+
+      if ioctl?(TIOCGWINSZ, buffer) ||
+         ioctl?(TIOCGWINSZ_PPC, buffer) ||
+         ioctl?(TIOCGWINSZ_SOL, buffer)
+
         rows, cols, = buffer.unpack(format)[0..1]
         return [rows, cols] if nonzero_column?(cols)
       end
     end
     module_function :size_from_ioctl
 
-    # Check if ioctl can be called and the device is attached to terminal
+    # Check if ioctl can be called and any of the streams is attached to terminal
+    #
+    # @return [Boolean]
+    #   True if any of the streams is attached to a terminal, false otherwise.
     #
     # @api private
     def ioctl?(control, buf)
-      @output.ioctl(control, buf) >= 0
+      ($stdout.ioctl(control, buf) >= 0) ||
+      ($stdin.ioctl(control, buf) >= 0) ||
+      ($stderr.ioctl(control, buf) >= 0)
     rescue SystemCallError
       false
     end
