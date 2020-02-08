@@ -328,7 +328,7 @@ module TTY
     end
     private_module_function :windows?
 
-    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_PLATFORM)
+    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_ENGINE)
     when /jruby/
       def jruby?; true end
     else
