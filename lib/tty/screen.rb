@@ -32,12 +32,18 @@ module TTY
 
     @env = ENV
     @output = $stderr
+    @cached_size_method = nil
 
     class << self
+      # Stores the current size method
+      # @api public
+      attr_accessor :cached_size_method
+
+      # Holds the environment variables
+      # @api public
       attr_accessor :env
 
       # Specifies an output stream
-      #
       # @api public
       attr_accessor :output
     end
@@ -45,22 +51,40 @@ module TTY
     # Get terminal rows and columns
     #
     # @return [Array[Integer, Integer]]
-    #   return rows & columns
+    #   return rows and columns
     #
     # @api public
     def size
-      size = size_from_java
-      size ||= size_from_win_api
-      size ||= size_from_ioctl
-      size ||= size_from_io_console
-      size ||= size_from_readline
-      size ||= size_from_tput
-      size ||= size_from_stty
-      size ||= size_from_env
-      size ||= size_from_ansicon
-      size ||  DEFAULT_SIZE
+      return cached_size_method.() unless cached_size_method.nil?
+
+      check_size(:size_from_java) ||
+      check_size(:size_from_win_api) ||
+      check_size(:size_from_ioctl) ||
+      check_size(:size_from_io_console) ||
+      check_size(:size_from_readline) ||
+      check_size(:size_from_tput) ||
+      check_size(:size_from_stty) ||
+      check_size(:size_from_env) ||
+      check_size(:size_from_ansicon) ||
+      DEFAULT_SIZE
     end
     module_function :size
+
+    # Check if a method returns a correct size and cache it
+    #
+    # @param [String] method_name
+    #
+    # @api private
+    def check_size(method_name)
+      size_method = method(method_name.to_sym)
+      size = size_method.()
+
+      return if size.nil?
+
+      self.cached_size_method = size_method
+      size
+    end
+    private_module_function :check_size
 
     def width
       size[1]
