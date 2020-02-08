@@ -5,7 +5,7 @@ begin
 rescue LoadError
 end
 
-require_relative 'screen/version'
+require_relative "screen/version"
 
 module TTY
   # Used for detecting screen properties
@@ -118,14 +118,14 @@ module TTY
 
       require "fiddle" unless defined?(Fiddle)
 
-      kernel32 = Fiddle::Handle.new('kernel32')
-      get_std_handle = Fiddle::Function.new(kernel32['GetStdHandle'],
+      kernel32 = Fiddle::Handle.new("kernel32")
+      get_std_handle = Fiddle::Function.new(kernel32["GetStdHandle"],
                         [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
       get_console_buffer_info = Fiddle::Function.new(
-        kernel32['GetConsoleScreenBufferInfo'],
+        kernel32["GetConsoleScreenBufferInfo"],
         [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT)
 
-      format        = 'SSSSSssssSS'
+      format        = "SSSSSssssSS"
       buffer        = ([0] * format.size).pack(format)
       stdout_handle = get_std_handle.(STDOUT_HANDLE)
 
@@ -147,13 +147,15 @@ module TTY
     # @api private
     def size_from_java(verbose: nil)
       return unless jruby?
-      require 'java'
-      java_import 'jline.TerminalFactory'
+
+      require "java"
+
+      java_import "jline.TerminalFactory"
       terminal = TerminalFactory.get
       size = [terminal.get_height, terminal.get_width]
       return size if nonzero_column?(size[1])
     rescue
-      warn 'failed to import java terminal package' if verbose
+      warn "failed to import java terminal package" if verbose
     end
     module_function :size_from_java
 
@@ -175,10 +177,10 @@ module TTY
         size = @output.winsize
         size if nonzero_column?(size[1])
       end
-    rescue LoadError
-      warn "no native io/console support or io-console gem" if verbose
     rescue Errno::EOPNOTSUPP
       # no support for winsize on output
+    rescue LoadError
+      warn "no native io/console support or io-console gem" if verbose
     end
     module_function :size_from_io_console
 
@@ -195,7 +197,7 @@ module TTY
       return if jruby?
       return unless @output.respond_to?(:ioctl)
 
-      format = 'SSSS'
+      format = "SSSS"
       buffer = ([0] * format.size).pack(format)
 
       if ioctl?(TIOCGWINSZ, buffer) ||
@@ -208,7 +210,8 @@ module TTY
     end
     module_function :size_from_ioctl
 
-    # Check if ioctl can be called and any of the streams is attached to terminal
+    # Check if ioctl can be called and any of the streams is
+    # attached to a terminal.
     #
     # @return [Boolean]
     #   True if any of the streams is attached to a terminal, false otherwise.
@@ -240,8 +243,9 @@ module TTY
     # @api private
     def size_from_tput
       return unless @output.tty?
-      lines = run_command('tput', 'lines').to_i
-      cols  = run_command('tput', 'cols').to_i
+
+      lines = run_command("tput", "lines").to_i
+      cols  = run_command("tput", "cols").to_i
       [lines, cols] if nonzero_column?(lines)
     rescue IOError, SystemCallError
     end
@@ -252,7 +256,8 @@ module TTY
     # @api private
     def size_from_stty
       return unless @output.tty?
-      out = run_command('stty', 'size')
+
+      out = run_command("stty", "size")
       return unless out
       size = out.split.map(&:to_i)
       size if nonzero_column?(size[1])
@@ -271,8 +276,9 @@ module TTY
     #
     # @api private
     def size_from_env
-      return unless @env['COLUMNS'] =~ /^\d+$/
-      size = [(@env['LINES'] || @env['ROWS']).to_i, @env['COLUMNS'].to_i]
+      return unless @env["COLUMNS"] =~ /^\d+$/
+
+      size = [(@env["LINES"] || @env["ROWS"]).to_i, @env["COLUMNS"].to_i]
       size if nonzero_column?(size[1])
     end
     module_function :size_from_env
@@ -281,7 +287,8 @@ module TTY
     #
     # @api private
     def size_from_ansicon
-      return unless @env['ANSICON'] =~ /\((.*)x(.*)\)/
+      return unless @env["ANSICON"] =~ /\((.*)x(.*)\)/
+
       size = [$2, $1].map(&:to_i)
       size if nonzero_column?(size[1])
     end
@@ -291,8 +298,9 @@ module TTY
     #
     # @api private
     def run_command(*args)
-      require 'tempfile'
-      out = Tempfile.new('tty-screen')
+      require "tempfile" unless defined?(Tempfile)
+
+      out = Tempfile.new("tty-screen")
       result = system(*args, out: out.path, err: File::NULL)
       return if result.nil?
       out.rewind
