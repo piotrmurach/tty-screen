@@ -238,9 +238,13 @@ RSpec.describe TTY::Screen, '#size' do
     end
   end
 
-  context 'default size' do
+  context "from default size" do
     it "suggests default terminal size" do
-      expect(TTY::Screen::DEFAULT_SIZE).to eq([27, 80])
+      screen = TTY::Screen
+      allow(screen).to receive(:check_size).with(anything()).and_return(false)
+      allow(screen).to receive(:check_size).with(:size_from_default).
+        and_return(TTY::Screen::DEFAULT_SIZE)
+      expect(screen.size).to eq([27, 80])
     end
   end
 end

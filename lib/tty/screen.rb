@@ -66,7 +66,7 @@ module TTY
       check_size(:size_from_stty) ||
       check_size(:size_from_env) ||
       check_size(:size_from_ansicon) ||
-      DEFAULT_SIZE
+      check_size(:size_from_default)
     end
     module_function :size
 
@@ -105,6 +105,16 @@ module TTY
     alias lines height
     module_function :rows
     module_function :lines
+
+    # Default size for the terminal
+    #
+    # @return [Array[Integer, Integer]]
+    #
+    # @api private
+    def size_from_default
+      DEFAULT_SIZE
+    end
+    module_function :size_from_default
 
     STDOUT_HANDLE = 0xFFFFFFF5
 
