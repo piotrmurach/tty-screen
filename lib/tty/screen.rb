@@ -35,10 +35,6 @@ module TTY
     @cached_size_method = nil
 
     class << self
-      # Stores the current size method
-      # @api public
-      attr_accessor :cached_size_method
-
       # Holds the environment variables
       # @api public
       attr_accessor :env
@@ -48,6 +44,11 @@ module TTY
       attr_accessor :output
     end
 
+    def reset_cache
+      @cached_size_method = nil
+    end
+    module_function :reset_cache
+
     # Get terminal rows and columns
     #
     # @return [Array[Integer, Integer]]
@@ -55,7 +56,9 @@ module TTY
     #
     # @api public
     def size
-      return cached_size_method.() unless cached_size_method.nil?
+      unless @cached_size_method.nil?
+        return public_send(@cached_size_method)
+      end
 
       check_size(:size_from_java) ||
       check_size(:size_from_win_api) ||
@@ -76,12 +79,11 @@ module TTY
     #
     # @api private
     def check_size(method_name)
-      size_method = method(method_name.to_sym)
-      size = size_method.()
+      size = public_send(method_name.to_sym)
 
       return if size.nil?
 
-      self.cached_size_method = size_method
+      @cached_size_method = method_name.to_sym
       size
     end
     private_module_function :check_size

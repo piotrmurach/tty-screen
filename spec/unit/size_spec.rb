@@ -14,6 +14,8 @@ RSpec.describe TTY::Screen, '#size' do
 
   let(:output) { Output.new(StringIO.new('', 'w+')) }
 
+  before { TTY::Screen.reset_cache }
+
   context 'size' do
     it "correctly falls through choices" do
       screen = TTY::Screen
