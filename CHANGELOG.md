@@ -1,5 +1,17 @@
 # Change log
 
+## [v0.8.0] - 2020-05-xx
+
+### Added
+* Add #windows? platform check
+* Add performance tests
+
+### Changed
+* Change #jruby? method to inline within module
+* Change #size_from_win_api to check only size on windows platform
+* Change #size_from_ioctl to check solaris-like system and scan all
+  streams to see if attached to a terminal
+
 ## [v0.7.1] - 2020-02-02
 
 ### Changed
@@ -111,6 +123,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.8.0]: https://github.com/piotrmurach/tty-screen/compare/v0.7.1...v0.8.0
 [v0.7.1]: https://github.com/piotrmurach/tty-screen/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/piotrmurach/tty-screen/compare/v0.6.5...v0.7.0
 [v0.6.5]: https://github.com/piotrmurach/tty-screen/compare/v0.6.4...v0.6.5
