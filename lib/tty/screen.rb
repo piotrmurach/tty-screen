@@ -187,47 +187,48 @@ module TTY
     end
     module_function :size_from_io_console
 
-    TIOCGWINSZ = 0x5413 # linux
-    TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
-    TIOCGWINSZ_SOL = 0x5468 # solaris
+    if !jruby? && @output.respond_to?(:ioctl)
+      TIOCGWINSZ = 0x5413 # linux
+      TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
+      TIOCGWINSZ_SOL = 0x5468 # solaris
 
-    # Read terminal size from Unix ioctl
-    #
-    # @return [nil, Array[Integer, Integer]]
-    #
-    # @api private
-    def size_from_ioctl
-      return if jruby?
-      return unless @output.respond_to?(:ioctl)
+      # Read terminal size from Unix ioctl
+      #
+      # @return [nil, Array[Integer, Integer]]
+      #
+      # @api private
+      def size_from_ioctl
+        format = "SSSS"
+        buffer = ([0] * format.size).pack(format)
 
-      format = "SSSS"
-      buffer = ([0] * format.size).pack(format)
+        if ioctl?(TIOCGWINSZ, buffer) ||
+          ioctl?(TIOCGWINSZ_PPC, buffer) ||
+          ioctl?(TIOCGWINSZ_SOL, buffer)
 
-      if ioctl?(TIOCGWINSZ, buffer) ||
-         ioctl?(TIOCGWINSZ_PPC, buffer) ||
-         ioctl?(TIOCGWINSZ_SOL, buffer)
-
-        rows, cols, = buffer.unpack(format)[0..1]
-        return [rows, cols] if nonzero_column?(cols)
+          rows, cols, = buffer.unpack(format)[0..1]
+          return [rows, cols] if nonzero_column?(cols)
+        end
       end
+
+      # Check if ioctl can be called and any of the streams is
+      # attached to a terminal.
+      #
+      # @return [Boolean]
+      #   True if any of the streams is attached to a terminal, false otherwise.
+      #
+      # @api private
+      def ioctl?(control, buf)
+        ($stdout.ioctl(control, buf) >= 0) ||
+        ($stdin.ioctl(control, buf) >= 0) ||
+        ($stderr.ioctl(control, buf) >= 0)
+      rescue SystemCallError
+        false
+      end
+      module_function :ioctl?
+    else
+      def size_from_ioctl; false end
     end
     module_function :size_from_ioctl
-
-    # Check if ioctl can be called and any of the streams is
-    # attached to a terminal.
-    #
-    # @return [Boolean]
-    #   True if any of the streams is attached to a terminal, false otherwise.
-    #
-    # @api private
-    def ioctl?(control, buf)
-      ($stdout.ioctl(control, buf) >= 0) ||
-      ($stdin.ioctl(control, buf) >= 0) ||
-      ($stderr.ioctl(control, buf) >= 0)
-    rescue SystemCallError
-      false
-    end
-    module_function :ioctl?
 
     # Detect screen size using Readline
     #

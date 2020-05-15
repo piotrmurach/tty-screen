@@ -117,22 +117,15 @@ RSpec.describe TTY::Screen  do
       $stdout, $stdin, $stderr = *originals
     end
 
-    it "reads terminal size" do
+    it "reads terminal size", unless: TTY::Screen.jruby? do
       screen = TTY::Screen
-      allow(screen).to receive(:jruby?).and_return(false)
-      old_output = screen.output
-      screen.output = output
-
       replace_streams do
         expect(screen.size_from_ioctl).to eq([51, 211])
       end
-
-      screen.output = old_output
     end
 
-    it "skips reading on jruby" do
-      allow(TTY::Screen).to receive(:jruby?).and_return(true)
-      expect(TTY::Screen.size_from_ioctl).to eq(nil)
+    it "skips reading on jruby", if: TTY::Screen.jruby? do
+      expect(TTY::Screen.size_from_ioctl).to eq(false)
     end
   end
 
