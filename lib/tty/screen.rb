@@ -18,6 +18,22 @@ module TTY
       private_class_method(name)
     end
 
+    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["host_os"] : ::RUBY_PLATFORM)
+    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      def windows?; true end
+    else
+      def windows?; false end
+    end
+    module_function :windows?
+
+    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_ENGINE)
+    when /jruby/
+      def jruby?; true end
+    else
+      def jruby?; false end
+    end
+    module_function :jruby?
+
     # Default terminal size
     #
     # @api public
@@ -87,37 +103,39 @@ module TTY
     end
     module_function :size_from_default
 
-    STDOUT_HANDLE = 0xFFFFFFF5
-
     # Determine terminal size with a Windows native API
     #
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def size_from_win_api(verbose: nil)
-      return unless windows?
+    if windows?
+      STDOUT_HANDLE = 0xFFFFFFF5
 
-      require "fiddle" unless defined?(Fiddle)
+      def size_from_win_api(verbose: nil)
+        require "fiddle" unless defined?(Fiddle)
 
-      kernel32 = Fiddle::Handle.new("kernel32")
-      get_std_handle = Fiddle::Function.new(kernel32["GetStdHandle"],
-                        [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
-      get_console_buffer_info = Fiddle::Function.new(
-        kernel32["GetConsoleScreenBufferInfo"],
-        [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT)
+        kernel32 = Fiddle::Handle.new("kernel32")
+        get_std_handle = Fiddle::Function.new(kernel32["GetStdHandle"],
+                          [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
+        get_console_buffer_info = Fiddle::Function.new(
+          kernel32["GetConsoleScreenBufferInfo"],
+          [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT)
 
-      format        = "SSSSSssssSS"
-      buffer        = ([0] * format.size).pack(format)
-      stdout_handle = get_std_handle.(STDOUT_HANDLE)
+        format        = "SSSSSssssSS"
+        buffer        = ([0] * format.size).pack(format)
+        stdout_handle = get_std_handle.(STDOUT_HANDLE)
 
-      get_console_buffer_info.(stdout_handle, buffer)
-      _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
-      size = [bottom - top + 1, right - left + 1]
-      return size if nonzero_column?(size[1] - 1)
-    resuce LoadError
-      warn "no native fiddle module found" if verbose
-    rescue Fiddle::DLError
-      # non windows platform or no kernel32 lib
+        get_console_buffer_info.(stdout_handle, buffer)
+        _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
+        size = [bottom - top + 1, right - left + 1]
+        return size if nonzero_column?(size[1] - 1)
+      resuce LoadError
+        warn "no native fiddle module found" if verbose
+      rescue Fiddle::DLError
+        # non windows platform or no kernel32 lib
+      end
+    else
+      def size_from_win_api; false end
     end
     module_function :size_from_win_api
 
@@ -302,21 +320,5 @@ module TTY
       column.to_i > 0
     end
     private_module_function :nonzero_column?
-
-    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["host_os"] : ::RUBY_PLATFORM)
-    when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
-      def windows?; true end
-    else
-      def windows?; false end
-    end
-    private_module_function :windows?
-
-    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_ENGINE)
-    when /jruby/
-      def jruby?; true end
-    else
-      def jruby?; false end
-    end
-    private_module_function :jruby?
   end # Screen
 end # TTY

@@ -1,6 +1,6 @@
 require "delegate"
 
-RSpec.describe TTY::Screen, "#size" do
+RSpec.describe TTY::Screen  do
   class Output < SimpleDelegator
     def winsize
       [100, 200]
@@ -14,7 +14,7 @@ RSpec.describe TTY::Screen, "#size" do
 
   let(:output) { Output.new(StringIO.new("", "w+")) }
 
-  context "size" do
+  context "#size" do
     it "correctly falls through choices" do
       screen = TTY::Screen
       old_output = screen.output
@@ -36,13 +36,9 @@ RSpec.describe TTY::Screen, "#size" do
     end
   end
 
-  context "size from windows api" do
-    it "doesn't check size on non-windows platform" do
-      screen = TTY::Screen
-      allow(screen).to receive(:windows?).and_return(false)
-
-      expect(screen.size_from_win_api).to eq(nil)
-      expect(screen).to have_received(:windows?).once
+  context "#size_from_win_api" do
+    it "doesn't check size on non-windows platform", unless: TTY::Screen.windows? do
+      expect(described_class.size_from_win_api).to eq(false)
     end
   end
 
