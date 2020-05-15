@@ -210,12 +210,14 @@ module TTY
     # Detect screen size using Readline
     #
     # @api private
-    def size_from_readline
-      if defined?(Readline) && Readline.respond_to?(:get_screen_size)
+    if defined?(::Readline) && ::Readline.respond_to?(:get_screen_size)
+      def size_from_readline
         size = Readline.get_screen_size
-        size if nonzero_column?(size[1])
+        nonzero_column?(size[1]) ? size : false
+      rescue NotImplementedError
       end
-    rescue NotImplementedError
+    else
+      def size_from_readline; false end
     end
     module_function :size_from_readline
 
