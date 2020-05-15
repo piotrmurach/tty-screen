@@ -18,13 +18,6 @@ module TTY
       private_class_method(name)
     end
 
-    # Helper to load dependency
-    def self.load_dep(name, message, verbose: false)
-      require(name)
-    rescue LoadError
-      warn(message) if verbose
-    end
-
     # Default terminal size
     #
     # @api public
@@ -44,11 +37,6 @@ module TTY
       attr_accessor :output
     end
 
-    def reset_cache
-      @cached_size_method = nil
-    end
-    module_function :reset_cache
-
     # Get terminal rows and columns
     #
     # @return [Array[Integer, Integer]]
@@ -56,37 +44,18 @@ module TTY
     #
     # @api public
     def size
-      unless @cached_size_method.nil?
-        return public_send(@cached_size_method)
-      end
-
-      check_size(:size_from_java) ||
-      check_size(:size_from_win_api) ||
-      check_size(:size_from_ioctl) ||
-      check_size(:size_from_io_console) ||
-      check_size(:size_from_readline) ||
-      check_size(:size_from_tput) ||
-      check_size(:size_from_stty) ||
-      check_size(:size_from_env) ||
-      check_size(:size_from_ansicon) ||
-      check_size(:size_from_default)
+      size_from_java ||
+      size_from_win_api ||
+      size_from_ioctl ||
+      size_from_io_console ||
+      size_from_readline ||
+      size_from_tput ||
+      size_from_stty ||
+      size_from_env ||
+      size_from_ansicon ||
+      size_from_default
     end
     module_function :size
-
-    # Check if a method returns a correct size and cache it
-    #
-    # @param [String] method_name
-    #
-    # @api private
-    def check_size(method_name)
-      size = public_send(method_name.to_sym)
-
-      return if size.nil?
-
-      @cached_size_method = method_name.to_sym
-      size
-    end
-    private_module_function :check_size
 
     def width
       size[1]

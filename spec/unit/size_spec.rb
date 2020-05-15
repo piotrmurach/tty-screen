@@ -1,6 +1,6 @@
-require 'delegate'
+require "delegate"
 
-RSpec.describe TTY::Screen, '#size' do
+RSpec.describe TTY::Screen, "#size" do
   class Output < SimpleDelegator
     def winsize
       [100, 200]
@@ -12,11 +12,9 @@ RSpec.describe TTY::Screen, '#size' do
     end
   end
 
-  let(:output) { Output.new(StringIO.new('', 'w+')) }
+  let(:output) { Output.new(StringIO.new("", "w+")) }
 
-  before { TTY::Screen.reset_cache }
-
-  context 'size' do
+  context "size" do
     it "correctly falls through choices" do
       screen = TTY::Screen
       old_output = screen.output
@@ -65,14 +63,14 @@ RSpec.describe TTY::Screen, '#size' do
       stub_const("TTY::Screen::TerminalFactory", factory)
 
       allow(screen).to receive(:jruby?).and_return(true)
-      allow(screen).to receive(:require).with('java').and_return(true)
+      allow(screen).to receive(:require).with("java").and_return(true)
       allow(screen).to receive(:java_import)
 
       expect(screen.size_from_java).to eq([51, 211])
     end
   end
 
-  context 'from io console' do
+  context "from io console" do
     it "doesn't calculate size if jruby " do
       screen = TTY::Screen
       allow(screen).to receive(:jruby?).and_return(true)
@@ -85,7 +83,7 @@ RSpec.describe TTY::Screen, '#size' do
       screen.output = output
 
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(screen).to receive(:require).with('io/console').
+      allow(screen).to receive(:require).with("io/console").
         and_return(true)
       allow(output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
@@ -100,7 +98,7 @@ RSpec.describe TTY::Screen, '#size' do
     it "doesn't calculate size if io/console not available" do
       screen = TTY::Screen
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(screen).to receive(:require).with('io/console').and_raise(LoadError)
+      allow(screen).to receive(:require).with("io/console").and_raise(LoadError)
 
       expect(screen.size_from_io_console).to eq(nil)
     end
@@ -108,7 +106,7 @@ RSpec.describe TTY::Screen, '#size' do
     it "doesn't calculate size if it is run without a console" do
       screen = TTY::Screen
       allow(screen).to receive(:jruby?).and_return(false)
-      allow(screen).to receive(:require).with('io/console').
+      allow(screen).to receive(:require).with("io/console").
         and_return(true)
       allow(screen.output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
@@ -144,7 +142,7 @@ RSpec.describe TTY::Screen, '#size' do
     end
   end
 
-  context 'from tput' do
+  context "from tput" do
     it "doesn't run command if outside of terminal" do
       allow(TTY::Screen.output).to receive(:tty?).and_return(false)
       expect(TTY::Screen.size_from_tput).to eq(nil)
@@ -153,21 +151,21 @@ RSpec.describe TTY::Screen, '#size' do
     it "runs tput commands" do
       screen = TTY::Screen
       allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:run_command).with('tput', 'lines').and_return(51)
-      allow(screen).to receive(:run_command).with('tput', 'cols').and_return(280)
+      allow(screen).to receive(:run_command).with("tput", "lines").and_return(51)
+      allow(screen).to receive(:run_command).with("tput", "cols").and_return(280)
       expect(screen.size_from_tput).to eq([51, 280])
     end
 
     it "doesn't return zero size" do
       screen = TTY::Screen
       allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:run_command).with('tput', 'lines').and_return(0)
-      allow(screen).to receive(:run_command).with('tput', 'cols').and_return(0)
+      allow(screen).to receive(:run_command).with("tput", "lines").and_return(0)
+      allow(screen).to receive(:run_command).with("tput", "cols").and_return(0)
       expect(screen.size_from_tput).to eq(nil)
     end
   end
 
-  context 'size from stty' do
+  context "size from stty" do
     it "doesn't run command if outside of terminal" do
       allow(TTY::Screen.output).to receive(:tty?).and_return(false)
       expect(TTY::Screen.size_from_stty).to eq(nil)
@@ -176,23 +174,23 @@ RSpec.describe TTY::Screen, '#size' do
     it "runs stty commands" do
       screen = TTY::Screen
       allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:run_command).with('stty', 'size').and_return("51 280")
+      allow(screen).to receive(:run_command).with("stty", "size").and_return("51 280")
       expect(screen.size_from_stty).to eq([51, 280])
     end
 
     it "doesn't return zero size" do
       screen = TTY::Screen
       allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:run_command).with('stty', 'size').and_return("0 0")
+      allow(screen).to receive(:run_command).with("stty", "size").and_return("0 0")
       expect(screen.size_from_stty).to eq(nil)
     end
   end
 
-  context 'size from env' do
+  context "size from env" do
     it "doesn't calculate size without COLUMNS key" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'COLUMNS' => nil}
+      screen.env = {"COLUMNS" => nil}
       expect(screen.size_from_env).to eq(nil)
       screen.env = old_env
     end
@@ -200,7 +198,7 @@ RSpec.describe TTY::Screen, '#size' do
     it "extracts lines and columns from environment" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'COLUMNS' => '280', 'LINES' => '51'}
+      screen.env = {"COLUMNS" => "280", "LINES" => "51"}
       expect(screen.size_from_env).to eq([51, 280])
       screen.env = old_env
     end
@@ -208,17 +206,17 @@ RSpec.describe TTY::Screen, '#size' do
     it "doesn't return zero size" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'COLUMNS' => '0', 'LINES' => '0'}
+      screen.env = {"COLUMNS" => "0", "LINES" => "0"}
       expect(screen.size_from_env).to eq(nil)
       screen.env = old_env
     end
   end
 
-  context 'from ansicon' do
+  context "from ansicon" do
     it "doesn't calculate size without ANSICON key" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'ANSICON' => nil}
+      screen.env = {"ANSICON" => nil}
       expect(screen.size_from_ansicon).to eq(nil)
       screen.env = old_env
     end
@@ -226,7 +224,7 @@ RSpec.describe TTY::Screen, '#size' do
     it "extracts lines and columns from environment" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'ANSICON' => '(280x51)'}
+      screen.env = {"ANSICON" => "(280x51)"}
       expect(screen.size_from_ansicon).to eq([51, 280])
       screen.env = old_env
     end
@@ -234,7 +232,7 @@ RSpec.describe TTY::Screen, '#size' do
     it "doesn't return zero size" do
       screen = TTY::Screen
       old_env = screen.env
-      screen.env = {'ANSICON' => '(0x0)'}
+      screen.env = {"ANSICON" => "(0x0)"}
       expect(screen.size_from_ansicon).to eq(nil)
       screen.env = old_env
     end
@@ -243,9 +241,11 @@ RSpec.describe TTY::Screen, '#size' do
   context "from default size" do
     it "suggests default terminal size" do
       screen = TTY::Screen
-      allow(screen).to receive(:check_size).and_return(false)
-      allow(screen).to receive(:check_size).with(:size_from_default).
-        and_return(TTY::Screen::DEFAULT_SIZE)
+      [:size_from_java, :size_from_win_api, :size_from_ioctl,
+       :size_from_io_console, :size_from_readline, :size_from_tput,
+       :size_from_stty, :size_from_env, :size_from_ansicon].each do |method|
+        allow(screen).to receive(method).and_return(false)
+       end
       expect(screen.size).to eq([27, 80])
     end
   end

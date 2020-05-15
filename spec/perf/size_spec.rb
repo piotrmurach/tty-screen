@@ -11,14 +11,14 @@ RSpec.describe TTY::Screen, ".size" do
       TTY::Screen.size
     }.to perform_slower_than {
       IO.console.winsize
-    }.at_most(15).times
+    }.at_most(10).times
   end
 
   it "performs at least 27K i/s" do
-    expect { TTY::Screen.size }.to perform_at_least(27_000).ips
+    expect { TTY::Screen.size }.to perform_at_least(270_000).ips
   end
 
   it "allocates at most 11 objects" do
-    expect { TTY::Screen.size }.to perform_allocation(13).objects
+    expect { TTY::Screen.size }.to perform_allocation(1).objects
   end
 end
