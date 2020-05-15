@@ -59,11 +59,11 @@ module TTY
     #   return rows and columns
     #
     # @api public
-    def size
-      size_from_java ||
-      size_from_win_api ||
+    def size(verbose: false)
+      size_from_java(verbose: verbose) ||
+      size_from_win_api(verbose: verbose) ||
       size_from_ioctl ||
-      size_from_io_console ||
+      size_from_io_console(verbose: verbose) ||
       size_from_readline ||
       size_from_tput ||
       size_from_stty ||
@@ -111,7 +111,7 @@ module TTY
     if windows?
       STDOUT_HANDLE = 0xFFFFFFF5
 
-      def size_from_win_api(verbose: nil)
+      def size_from_win_api(verbose: false)
         require "fiddle" unless defined?(Fiddle)
 
         kernel32 = Fiddle::Handle.new("kernel32")
@@ -135,7 +135,7 @@ module TTY
         # non windows platform or no kernel32 lib
       end
     else
-      def size_from_win_api; false end
+      def size_from_win_api(verbose: false); false end
     end
     module_function :size_from_win_api
 
@@ -144,7 +144,7 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def size_from_java(verbose: nil)
+    def size_from_java(verbose: false)
       return unless jruby?
 
       require "java"
@@ -167,7 +167,7 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def size_from_io_console(verbose: nil)
+    def size_from_io_console(verbose: false)
       return if jruby?
 
       require "io/console"
