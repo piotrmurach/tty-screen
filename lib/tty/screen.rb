@@ -144,17 +144,21 @@ module TTY
     # @return [nil, Array[Integer, Integer]]
     #
     # @api private
-    def size_from_java(verbose: false)
-      return unless jruby?
+    if jruby?
+      def size_from_java(verbose: false)
+        return unless jruby?
 
-      require "java"
+        require "java"
 
-      java_import "jline.TerminalFactory"
-      terminal = TerminalFactory.get
-      size = [terminal.get_height, terminal.get_width]
-      return size if nonzero_column?(size[1])
-    rescue
-      warn "failed to import java terminal package" if verbose
+        java_import "jline.TerminalFactory"
+        terminal = TerminalFactory.get
+        size = [terminal.get_height, terminal.get_width]
+        return size if nonzero_column?(size[1])
+      rescue
+        warn "failed to import java terminal package" if verbose
+      end
+    else
+      def size_from_java(verbose: false); false end
     end
     module_function :size_from_java
 

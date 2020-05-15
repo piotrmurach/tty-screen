@@ -43,13 +43,11 @@ RSpec.describe TTY::Screen  do
   end
 
   context "size from java" do
-    it "doesn't import java on non-jruby platform" do
-      screen = TTY::Screen
-      allow(screen).to receive(:jruby?).and_return(false)
-      expect(screen.size_from_java).to eq(nil)
+    it "doesn't import java on non-jruby platform", unless: TTY::Screen.jruby? do
+      expect(described_class.size_from_java).to eq(false)
     end
 
-    it "imports java library on jruby" do
+    it "imports java library on jruby", if: TTY::Screen.jruby? do
       screen = TTY::Screen
       class << screen
         def java_import(*args); end
