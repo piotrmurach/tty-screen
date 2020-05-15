@@ -124,7 +124,7 @@ RSpec.describe TTY::Screen  do
       end
     end
 
-    it "skips reading on jruby", if: (TTY::Screen.jruby? || TTY::Screen.windows?) do
+    it "skips reading on jruby", if: TTY::Screen.jruby? do
       expect(TTY::Screen.size_from_ioctl).to eq(false)
     end
   end
