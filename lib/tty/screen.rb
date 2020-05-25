@@ -304,15 +304,9 @@ module TTY
     #
     # @api private
     def run_command(*args)
-      require "tempfile" unless defined?(Tempfile)
-
-      out = Tempfile.new("tty-screen")
-      result = system(*args, out: out.path, err: File::NULL)
-      return if result.nil?
-      out.rewind
-      out.read
-    ensure
-      out.close if out
+      %x(#{args.join(" ")})
+    rescue Errno::ENOENT
+      nil
     end
     private_module_function :run_command
 
