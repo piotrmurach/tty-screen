@@ -41,7 +41,6 @@ module TTY
 
     @env = ENV
     @output = $stderr
-    @cached_size_method = nil
 
     class << self
       # Holds the environment variables
