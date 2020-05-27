@@ -172,9 +172,7 @@ module TTY
     #
     # @api private
     def size_from_io_console(verbose: false)
-      return if jruby?
-
-      require "io/console"
+      require "io/console" unless IO.method_defined?(:winsize)
 
       if @output.tty? && IO.method_defined?(:winsize)
         size = @output.winsize

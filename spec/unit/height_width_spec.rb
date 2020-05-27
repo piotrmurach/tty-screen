@@ -1,4 +1,6 @@
-RSpec.describe TTY::Screen, '#height,#width' do
+# frozen_string_literal: true
+
+RSpec.describe TTY::Screen, "#height,#width" do
   it "calcualtes screen width" do
     allow(TTY::Screen).to receive(:size).and_return([51, 280])
     expect(TTY::Screen.width).to eq(280)
