@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://piotrmurach.github.io/tty" target="_blank"><img width="130" src="https://cdn.rawgit.com/piotrmurach/tty/master/images/tty.png" alt="tty logo" /></a>
+  <a href="https://piotrmurach.github.io/tty" target="_blank"><img width="130" src="https://github.com/piotrmurach/tty/raw/master/images/tty.png" alt="tty logo" /></a>
 </div>
 
 # TTY::Screen [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
@@ -19,7 +19,7 @@
 [coverage]: https://coveralls.io/r/piotrmurach/tty-screen
 [inchpages]: http://inch-ci.org/github/piotrmurach/tty-screen
 
-> Terminal screen size detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby and Rubinius interpreters.
+> Terminal screen size detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby, TruffleRuby and Rubinius interpreters.
 
 **TTY::Screen** provides independent terminal screen size detection component for [TTY](https://github.com/piotrmurach/tty) toolkit.
 
