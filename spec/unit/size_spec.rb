@@ -18,13 +18,17 @@ RSpec.describe TTY::Screen do
     it "correctly falls through choices" do
       screen = TTY::Screen
       old_output = screen.output
-      screen.output = output
+      screen.output = StringIO.new
 
-      allow(screen).to receive(:size_from_java).and_return(nil)
-      allow(screen).to receive(:size_from_win_api).and_return(nil)
-      allow(screen).to receive(:size_from_ioctl).and_return(nil)
-      allow(screen).to receive(:size_from_io_console).and_return([51, 280])
-      allow(screen).to receive(:size_from_readline).and_return(nil)
+      {
+        size_from_java: nil,
+        size_from_win_api: nil,
+        size_from_ioctl: nil,
+        size_from_io_console: [51, 280],
+        size_from_readline: nil
+      }.each do |size_method, result|
+        allow(screen).to receive(size_method) { result }
+      end
 
       expect(screen.size).to eq([51, 280])
       expect(screen).to have_received(:size_from_java)
@@ -38,13 +42,13 @@ RSpec.describe TTY::Screen do
 
   describe "#size_from_win_api" do
     it "doesn't check size on non-windows platform", unless: TTY::Screen.windows? do
-      expect(described_class.size_from_win_api).to eq(false)
+      expect(described_class.size_from_win_api).to eq(nil)
     end
   end
 
   describe "#size_from_java" do
     it "doesn't import java on non-jruby platform", unless: TTY::Screen.jruby? do
-      expect(described_class.size_from_java).to eq(false)
+      expect(described_class.size_from_java).to eq(nil)
     end
 
     it "imports java library on jruby", if: TTY::Screen.jruby? do
@@ -220,10 +224,16 @@ RSpec.describe TTY::Screen do
   describe "#size_from_default" do
     it "suggests default terminal size" do
       screen = TTY::Screen
-      [:size_from_java, :size_from_win_api, :size_from_ioctl,
-       :size_from_io_console, :size_from_readline, :size_from_tput,
-       :size_from_stty, :size_from_env, :size_from_ansicon].each do |method|
-        allow(screen).to receive(method).and_return(false)
+      [:size_from_java,
+       :size_from_win_api,
+       :size_from_ioctl,
+       :size_from_io_console,
+       :size_from_readline,
+       :size_from_tput,
+       :size_from_stty,
+       :size_from_env,
+       :size_from_ansicon].each do |method|
+        allow(screen).to receive(method).and_return(nil)
        end
       expect(screen.size).to eq([27, 80])
     end

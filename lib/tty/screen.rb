@@ -64,7 +64,7 @@ module TTY
       size_from_win_api(verbose: verbose) ||
       size_from_ioctl ||
       size_from_io_console(verbose: verbose) ||
-      size_from_readline ||
+      size_from_readline(verbose: verbose) ||
       size_from_tput ||
       size_from_stty ||
       size_from_env ||
@@ -135,7 +135,7 @@ module TTY
         # non windows platform or no kernel32 lib
       end
     else
-      def size_from_win_api(verbose: false); false end
+      def size_from_win_api(verbose: false); nil end
     end
     module_function :size_from_win_api
 
@@ -156,7 +156,7 @@ module TTY
         warn "failed to import java terminal package" if verbose
       end
     else
-      def size_from_java(verbose: false); false end
+      def size_from_java(verbose: false); nil end
     end
     module_function :size_from_java
 
@@ -222,7 +222,7 @@ module TTY
       end
       module_function :ioctl?
     else
-      def size_from_ioctl; false end
+      def size_from_ioctl; nil end
     end
     module_function :size_from_ioctl
 
