@@ -146,8 +146,6 @@ module TTY
     # @api private
     if jruby?
       def size_from_java(verbose: false)
-        return unless jruby?
-
         require "java"
 
         java_import "jline.TerminalFactory"
@@ -231,14 +229,16 @@ module TTY
     # Detect screen size using Readline
     #
     # @api private
-    if defined?(::Readline) && ::Readline.respond_to?(:get_screen_size)
-      def size_from_readline
-        size = Readline.get_screen_size
-        nonzero_column?(size[1]) ? size : false
-      rescue NotImplementedError
-      end
-    else
-      def size_from_readline; false end
+    def size_from_readline(verbose: false)
+      require "readline" unless defined?(::Readline)
+
+      return unless ::Readline.respond_to?(:get_screen_size)
+
+      size = ::Readline.get_screen_size
+      size if nonzero_column?(size[1])
+    rescue LoadError
+      warn "no readline gem" if verbose
+    rescue NotImplementedError
     end
     module_function :size_from_readline
 
