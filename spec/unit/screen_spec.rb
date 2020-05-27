@@ -238,4 +238,34 @@ RSpec.describe TTY::Screen do
       expect(screen.size).to eq([27, 80])
     end
   end
+
+  describe "#width" do
+    it "calcualtes screen width" do
+      allow(TTY::Screen).to receive(:size).and_return([51, 280])
+
+      expect(TTY::Screen.width).to eq(280)
+    end
+
+    it "aliases width to columns and cols" do
+      allow(TTY::Screen).to receive(:size).and_return([51, 280])
+
+      expect(TTY::Screen.columns).to eq(280)
+      expect(TTY::Screen.cols).to eq(280)
+    end
+  end
+
+  describe "#height" do
+    it "calcualtes screen height" do
+      allow(TTY::Screen).to receive(:size).and_return([51, 280])
+
+      expect(TTY::Screen.height).to eq(51)
+    end
+
+    it "aliases width to rows and lines" do
+      allow(TTY::Screen).to receive(:size).and_return([51, 280])
+
+      expect(TTY::Screen.rows).to eq(51)
+      expect(TTY::Screen.lines).to eq(51)
+    end
+  end
 end
