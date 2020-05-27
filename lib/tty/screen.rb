@@ -247,9 +247,11 @@ module TTY
     def size_from_tput
       return unless @output.tty?
 
-      lines = run_command("tput", "lines").to_i
-      cols  = run_command("tput", "cols").to_i
-      [lines, cols] if nonzero_column?(lines)
+      lines = run_command("tput", "lines")
+      return unless lines
+
+      cols = run_command("tput", "cols")
+      [lines.to_i, cols.to_i] if nonzero_column?(lines)
     end
     module_function :size_from_tput
 
@@ -261,6 +263,7 @@ module TTY
 
       out = run_command("stty", "size")
       return unless out
+
       size = out.split.map(&:to_i)
       size if nonzero_column?(size[1])
     end
