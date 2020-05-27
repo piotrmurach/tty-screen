@@ -250,7 +250,6 @@ module TTY
       lines = run_command("tput", "lines").to_i
       cols  = run_command("tput", "cols").to_i
       [lines, cols] if nonzero_column?(lines)
-    rescue IOError, SystemCallError
     end
     module_function :size_from_tput
 
@@ -264,7 +263,6 @@ module TTY
       return unless out
       size = out.split.map(&:to_i)
       size if nonzero_column?(size[1])
-    rescue IOError, SystemCallError
     end
     module_function :size_from_stty
 
@@ -302,7 +300,7 @@ module TTY
     # @api private
     def run_command(*args)
       %x(#{args.join(" ")})
-    rescue Errno::ENOENT
+    rescue IOError, SystemCallError
       nil
     end
     private_module_function :run_command
