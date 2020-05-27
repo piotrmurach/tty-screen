@@ -68,21 +68,22 @@ RSpec.describe TTY::Screen do
     it "calcualtes the size" do
       screen = TTY::Screen
       old_output = screen.output
-      screen.output = output
+      screen.output = StringIO.new
 
-      allow(screen).to receive(:require).with("io/console") { true }
-      allow(output).to receive(:tty?) { true }
-      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
-      allow(output).to receive(:winsize).and_return([100, 200])
+      allow(IO).to receive(:method_defined?).with(:winsize) { true }
+      allow(screen.output).to receive(:tty?) { true }
+      allow(screen.output).to receive(:respond_to?) { true }
+      allow(screen.output).to receive(:winsize) { [100, 200] }
 
       expect(screen.size_from_io_console).to eq([100, 200])
-      expect(output).to have_received(:winsize)
+      expect(screen.output).to have_received(:winsize)
 
       screen.output = old_output
     end
 
     it "doesn't calculate size if io/console not available" do
       screen = TTY::Screen
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
       allow(screen).to receive(:require).with("io/console").and_raise(LoadError)
 
       expect(screen.size_from_io_console).to eq(nil)
@@ -90,9 +91,11 @@ RSpec.describe TTY::Screen do
 
     it "doesn't calculate size if it is run without a console" do
       screen = TTY::Screen
+      allow(IO).to receive(:method_defined?).with(:winsize) { true }
       allow(screen).to receive(:require).with("io/console") { true }
       allow(screen.output).to receive(:tty?) { true }
-      allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
+      allow(screen.output).to receive(:respond_to?).with(:winsize) { false }
+
       expect(screen.size_from_io_console).to eq(nil)
     end
   end
