@@ -245,7 +245,7 @@ module TTY
     #
     # @api private
     def size_from_tput
-      return unless @output.tty?
+      return unless @output.tty? && command_exist?("tput")
 
       lines = run_command("tput", "lines")
       return unless lines
@@ -259,7 +259,7 @@ module TTY
     #
     # @api private
     def size_from_stty
-      return unless @output.tty?
+      return unless @output.tty? && command_exist?("stty")
 
       out = run_command("stty", "size")
       return unless out
@@ -297,6 +297,20 @@ module TTY
       size if nonzero_column?(size[1])
     end
     module_function :size_from_ansicon
+
+    # Check if command exists
+    #
+    # @return [Boolean]
+    #
+    # @api private
+    def command_exist?(command)
+      exts = env.fetch("PATHEXT", "").split(::File::PATH_SEPARATOR)
+      env.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |dir|
+        file = ::File.join(dir, command)
+        ::File.exist?(file) || exts.any? { |ext| ::File.exist?("#{file}#{ext}") }
+      end
+    end
+    private_module_function :command_exist?
 
     # Runs command silently capturing the output
     #
