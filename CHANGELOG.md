@@ -1,21 +1,23 @@
 # Change log
 
-## [v0.8.0] - 2020-05-27
+## [v0.8.0] - 2020-05-28
 
 ### Added
 * Add #windows? platform check
+* Add #command_exist? to see if an executable exists before running it
 * Add performance tests
 
 ### Changed
 * Change #jruby? method to hoist within module
-* Change #size_from_ioctl to check solaris-like system and scan all
-  streams to see if any attached to a terminal
-* Change #size_from_win_api to check only size on windows platform
-* Change #size_from_io_console to work on JRuby
-* Change #size_from_win_api to hoist within module
+* Change #size_from_win_api to check only on windows platform and
+  hoist definition within module
 * Change #size_from_java to hoist within module
-* Change #size_from_readline,to hoist within module
-* Change #size_from_ioctl to hoist within module
+* Change #size_from_ioctl to:
+  * check solaris-like system
+  * scan all streams to see if any attached to a terminal
+  * hoist definition within module
+* Change #size_from_io_console to perform check on JRuby as well
+* Change #size_from_readline to attempt to load readline gem
 * Change #run_command to execute command directly without sub shell or temp files
 
 ## [v0.7.1] - 2020-02-02
