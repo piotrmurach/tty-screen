@@ -127,8 +127,14 @@ RSpec.describe TTY::Screen do
       expect(screen.size_from_tput).to eq(nil)
     end
 
+    it "doesn't run command if not available" do
+      allow(screen).to receive(:command_exist?).and_return(false)
+      expect(screen.size_from_tput).to eq(nil)
+    end
+
     it "runs tput commands" do
       allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
       allow(screen).to receive(:run_command).with("tput", "lines").and_return(51)
       allow(screen).to receive(:run_command).with("tput", "cols").and_return(280)
 
@@ -137,6 +143,7 @@ RSpec.describe TTY::Screen do
 
     it "doesn't return zero size" do
       allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
       allow(screen).to receive(:run_command).with("tput", "lines").and_return(0)
       allow(screen).to receive(:run_command).with("tput", "cols").and_return(0)
 
@@ -150,8 +157,14 @@ RSpec.describe TTY::Screen do
       expect(screen.size_from_stty).to eq(nil)
     end
 
+    it "doesn't run command if not available" do
+      allow(screen).to receive(:command_exist?).and_return(false)
+      expect(screen.size_from_stty).to eq(nil)
+    end
+
     it "runs stty commands" do
       allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
       allow(screen).to receive(:run_command).with("stty", "size").and_return("51 280")
 
       expect(screen.size_from_stty).to eq([51, 280])
@@ -159,6 +172,7 @@ RSpec.describe TTY::Screen do
 
     it "doesn't return zero size" do
       allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
       allow(screen).to receive(:run_command).with("stty", "size").and_return("0 0")
 
       expect(screen.size_from_stty).to eq(nil)
