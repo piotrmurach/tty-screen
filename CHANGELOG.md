@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.8.1] - 2020-07-17
+
+### Fixed
+* Fix name resolution with TTY::File by Alexey Nikitin (@tank-bohr)
+
 ## [v0.8.0] - 2020-05-28
 
 ### Added
@@ -131,6 +136,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.8.1]: https://github.com/piotrmurach/tty-screen/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/piotrmurach/tty-screen/compare/v0.7.1...v0.8.0
 [v0.7.1]: https://github.com/piotrmurach/tty-screen/compare/v0.7.0...v0.7.1
 [v0.7.0]: https://github.com/piotrmurach/tty-screen/compare/v0.6.5...v0.7.0
