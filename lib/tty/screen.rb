@@ -305,7 +305,7 @@ module TTY
     # @api private
     def command_exist?(command)
       exts = env.fetch("PATHEXT", "").split(::File::PATH_SEPARATOR)
-      env.fetch("PATH", "").split(File::PATH_SEPARATOR).any? do |dir|
+      env.fetch("PATH", "").split(::File::PATH_SEPARATOR).any? do |dir|
         file = ::File.join(dir, command)
         ::File.exist?(file) || exts.any? { |ext| ::File.exist?("#{file}#{ext}") }
       end
