@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.8.2] - unreleased
+
+### Fixed
+* Fix ioctl call test to stub terminal size encoding for big-endian systems
+
 ## [v0.8.1] - 2020-07-17
 
 ### Fixed
@@ -136,6 +141,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.8.2]: https://github.com/piotrmurach/tty-screen/compare/v0.8.1...v0.8.2
 [v0.8.1]: https://github.com/piotrmurach/tty-screen/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/piotrmurach/tty-screen/compare/v0.7.1...v0.8.0
 [v0.7.1]: https://github.com/piotrmurach/tty-screen/compare/v0.7.0...v0.7.1
