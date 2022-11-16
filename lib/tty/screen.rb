@@ -231,7 +231,7 @@ module TTY
     def size_from_readline(verbose: false)
       require "readline" unless defined?(::Readline)
 
-      return unless ::Readline.respond_to?(:get_screen_size)
+      return unless @output.tty? && ::Readline.respond_to?(:get_screen_size)
 
       size = ::Readline.get_screen_size
       size if nonzero_column?(size[1])
