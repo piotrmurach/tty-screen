@@ -53,6 +53,15 @@ RSpec.describe TTY::Screen do
     end
   end
 
+  describe "#size_from_readline" do
+    it "doesn't calculate size if it is run without a console" do
+      require "readline" unless defined?(::Readline)
+      allow(screen.output).to receive(:tty?) { false }
+      allow(::Readline).to receive(:get_screen_size) { [50, 201] }
+      expect(screen.size_from_readline).to eq(nil)
+    end
+  end
+
   describe "#size_from_java" do
     it "doesn't import java on non-jruby platform", unless: TTY::Screen.jruby? do
       expect(screen.size_from_java).to eq(nil)
