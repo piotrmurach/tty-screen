@@ -56,10 +56,10 @@ RSpec.describe TTY::Screen do
   describe "#size_from_readline" do
     it "doesn't calculate size if it is run without a console" do
       require "readline" unless defined?(::Readline)
-      allow(::Readline).to receive(:method_defined?).with(:get_screen_size) { true }
-      
       allow(screen.output).to receive(:tty?) { false }
-      allow(::Readline).to receive(:get_screen_size) { [50, 201] }
+      if ::Readline.respond_to?(:get_screen_size)
+        allow(::Readline).to receive(:get_screen_size) { [50, 201] }
+      end
       expect(screen.size_from_readline).to eq(nil)
     end
   end
