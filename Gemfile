@@ -13,7 +13,3 @@ if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.1.0") &&
    !(/jruby/ =~ RUBY_ENGINE)
   gem "rspec-benchmark", "~> 0.6.0"
 end
-if Gem::Version.new(RUBY_VERSION) >= Gem::Version.new("2.4.0") &&
-   !(/jruby/ =~ RUBY_ENGINE)
-  gem "io-console"
-end
