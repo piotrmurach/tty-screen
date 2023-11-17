@@ -2,14 +2,13 @@
   <a href="https://ttytoolkit.org"><img width="130" src="https://github.com/piotrmurach/tty/raw/master/images/tty.png" alt="TTY Toolkit logo"/></a>
 </div>
 
-# TTY::Screen [![Gitter](https://badges.gitter.im/Join%20Chat.svg)][gitter]
+# TTY::Screen
 
 [![Gem Version](https://badge.fury.io/rb/tty-screen.svg)][gem]
 [![Actions CI](https://github.com/piotrmurach/tty-screen/actions/workflows/ci.yml/badge.svg)][gh_actions_ci]
 [![Build status](https://ci.appveyor.com/api/projects/status/myjv8kahk1iwrlha?svg=true)][appveyor]
 [![Code Climate](https://codeclimate.com/github/piotrmurach/tty-screen/badges/gpa.svg)][codeclimate]
 [![Coverage Status](https://coveralls.io/repos/piotrmurach/tty-screen/badge.svg)][coverage]
-[![Inline docs](http://inch-ci.org/github/piotrmurach/tty-screen.svg?branch=master)][inchpages]
 
 [gitter]: https://gitter.im/piotrmurach/tty
 [gem]: http://badge.fury.io/rb/tty-screen
@@ -17,7 +16,6 @@
 [appveyor]: https://ci.appveyor.com/project/piotrmurach/tty-screen
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-screen
 [coverage]: https://coveralls.io/r/piotrmurach/tty-screen
-[inchpages]: http://inch-ci.org/github/piotrmurach/tty-screen
 
 > Terminal screen size detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby, TruffleRuby and Rubinius interpreters.
 
