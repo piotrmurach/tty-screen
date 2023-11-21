@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
       "changelog_uri"     => "https://github.com/piotrmurach/tty-screen/blob/master/CHANGELOG.md",
       "documentation_uri" => "https://www.rubydoc.info/gems/tty-screen",
       "homepage_uri"      => spec.homepage,
+      "rubygems_mfa_required" => "true",
       "source_code_uri"   => "https://github.com/piotrmurach/tty-screen"
     }
   end
