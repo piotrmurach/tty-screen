@@ -1,4 +1,5 @@
 require "delegate"
+require "stringio"
 
 RSpec.describe TTY::Screen do
   class Output < SimpleDelegator
