@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "delegate"
 require "stringio"
 
@@ -19,7 +21,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  let(:output) { Output.new(StringIO.new("", "w+")) }
+  let(:output) { Output.new(StringIO.new) }
 
   subject(:screen) { described_class }
 
