@@ -4,25 +4,6 @@ require "delegate"
 require "stringio"
 
 RSpec.describe TTY::Screen do
-  class Output < SimpleDelegator
-    def winsize
-      [100, 200]
-    end
-
-    def big_endian?
-      [1].pack("S") == [1].pack("n")
-    end
-
-    def ioctl(control, buf)
-      little_endian = "3\x00\xD3\x00\xF2\x04\xCA\x02\x00"
-      big_endian = "\x003\x00\xD3\x04\xF2\x02\xCA"
-      buf.replace(big_endian? ? big_endian : little_endian)
-      0
-    end
-  end
-
-  let(:output) { Output.new(StringIO.new) }
-
   subject(:screen) { described_class }
 
   describe "#size" do
@@ -111,6 +92,27 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_ioctl" do
+    before do
+      stub_const("Output", Class.new(SimpleDelegator) do
+        def winsize
+          [100, 200]
+        end
+
+        def big_endian?
+          [1].pack("S") == [1].pack("n")
+        end
+
+        def ioctl(_control, buf)
+          little_endian = "3\x00\xD3\x00\xF2\x04\xCA\x02\x00"
+          big_endian = "\x003\x00\xD3\x04\xF2\x02\xCA"
+          buf.replace(big_endian? ? big_endian : little_endian)
+          0
+        end
+      end)
+    end
+
+    let(:output) { Output.new(StringIO.new) }
+
     def replace_streams(*streams)
       originals = [$stdout, $stdin, $stderr]
       $stdout, $stdin, $stderr = output, output, output
