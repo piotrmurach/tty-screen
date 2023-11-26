@@ -111,18 +111,8 @@ RSpec.describe TTY::Screen do
       end)
     end
 
-    let(:output) { Output.new(StringIO.new) }
-
-    def replace_streams(*streams)
-      originals = [$stdout, $stdin, $stderr]
-      $stdout, $stdin, $stderr = output, output, output
-      yield
-    ensure
-      $stdout, $stdin, $stderr = *originals
-    end
-
     it "reads terminal size", unless: TTY::Screen.windows? || TTY::Screen.jruby? do
-      replace_streams do
+      replace_standard_streams(Output.new(StringIO.new)) do
         expect(screen.size_from_ioctl).to eq([51, 211])
       end
     end
