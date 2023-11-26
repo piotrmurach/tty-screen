@@ -15,9 +15,34 @@ if ENV["COVERAGE"] == "true"
   end
 end
 
+module Helpers
+  # Replace standard streams
+  #
+  # @example
+  #   replace_standard_streams(StringIO.new) do
+  #     ...
+  #   end
+  #
+  # @param [StringIO] output
+  #   the output to replace standard streams with
+  #
+  # @return [void]
+  #
+  # @api public
+  def replace_standard_streams(output)
+    original_streams = [$stdin, $stdout, $stderr]
+    $stdin, $stdout, $stderr = output, output, output
+    yield
+  ensure
+    $stdin, $stdout, $stderr = *original_streams
+  end
+end
+
 require "tty-screen"
 
 RSpec.configure do |config|
+  config.include(Helpers)
+
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
