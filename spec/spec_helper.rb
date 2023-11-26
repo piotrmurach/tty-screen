@@ -36,6 +36,28 @@ module Helpers
   ensure
     $stdin, $stdout, $stderr = *original_streams
   end
+
+  # Undefine a constant
+  #
+  # @example
+  #   undefine_const(:Readline) do
+  #     ...
+  #   end
+  #
+  # @param [String, Symbol] name
+  #   the constant name
+  #
+  # @return [void]
+  #
+  # @api public
+  def undefine_const(name)
+    if Object.const_defined?(name)
+      const = Object.send(:remove_const, name)
+    end
+    yield
+  ensure
+    Object.const_set(name, const) if const
+  end
 end
 
 require "tty-screen"
