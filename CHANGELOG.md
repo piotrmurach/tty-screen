@@ -4,6 +4,7 @@
 
 ### Fixed
 * Fix ioctl call test to stub terminal size encoding for big-endian systems
+* Fix to skip terminal size detection from readline on non-TTY output
 
 ## [v0.8.1] - 2020-07-17
 

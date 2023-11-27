@@ -229,8 +229,9 @@ module TTY
     #
     # @api private
     def size_from_readline(verbose: false)
-      require "readline" unless defined?(::Readline)
+      return unless output.tty?
 
+      require "readline" unless defined?(::Readline)
       return unless ::Readline.respond_to?(:get_screen_size)
 
       size = ::Readline.get_screen_size

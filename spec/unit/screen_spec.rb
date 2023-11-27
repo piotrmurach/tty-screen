@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "delegate"
+require "readline"
 require "stringio"
 
 RSpec.describe TTY::Screen do
@@ -119,6 +120,72 @@ RSpec.describe TTY::Screen do
 
     it "skips reading on jruby", if: TTY::Screen.jruby? do
       expect(screen.size_from_ioctl).to eq(nil)
+    end
+  end
+
+  describe "#size_from_readline" do
+    it "doesn't detect size on non-tty output" do
+      allow(screen.output).to receive(:tty?).and_return(false)
+
+      expect(screen.size_from_readline).to eq(nil)
+      expect(screen.output).to have_received(:tty?)
+    end
+
+    it "doesn't detect size when the readline fails to load" do
+      undefine_const(:Readline) do
+        allow(screen.output).to receive(:tty?).and_return(true)
+        allow(screen).to receive(:require).with("readline").and_raise(LoadError)
+
+        expect(screen.size_from_readline).to eq(nil)
+        expect(screen).to have_received(:require).with("readline")
+      end
+    end
+
+    it "warns in verbose mode when the readline fails to load" do
+      undefine_const(:Readline) do
+        allow(screen.output).to receive(:tty?).and_return(true)
+        allow(screen).to receive(:require).with("readline").and_raise(LoadError)
+
+        expect {
+          screen.size_from_readline(verbose: true)
+        }.to output("no readline gem\n").to_stderr
+      end
+    end
+
+    it "doesn't detect size when the get_screen_size method is missing" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(Readline).to receive(:respond_to?)
+        .with(:get_screen_size).and_return(false)
+
+      expect(screen.size_from_readline).to eq(nil)
+      expect(Readline).to have_received(:respond_to?).with(:get_screen_size)
+    end
+
+    it "doesn't detect size when the get_screen_size method raises an error" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(Readline).to receive(:respond_to?).and_return(true)
+      allow(Readline).to receive(:get_screen_size)
+        .and_raise(NotImplementedError)
+
+      expect(screen.size_from_readline).to eq(nil)
+      expect(Readline).to have_received(:get_screen_size)
+    end
+
+    it "detects no columns" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(Readline).to receive_messages(
+        respond_to?: true, get_screen_size: [51, 0])
+
+      expect(screen.size_from_readline).to eq(nil)
+      expect(Readline).to have_received(:get_screen_size)
+    end
+
+    it "detects size" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(Readline).to receive_messages(
+        respond_to?: true, get_screen_size: [51, 211])
+
+      expect(screen.size_from_readline).to eq([51, 211])
     end
   end
 
