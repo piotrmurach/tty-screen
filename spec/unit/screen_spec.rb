@@ -60,35 +60,67 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_io_console" do
-    it "calcualtes the size" do
-      old_output = screen.output
-      screen.output = StringIO.new
+    it "doesn't detect size on non-tty output" do
+      allow(screen.output).to receive(:tty?).and_return(false)
 
-      allow(IO).to receive(:method_defined?).with(:winsize) { true }
-      allow(screen.output).to receive(:tty?) { true }
-      allow(screen.output).to receive(:respond_to?) { true }
-      allow(screen.output).to receive(:winsize) { [100, 200] }
-
-      expect(screen.size_from_io_console).to eq([100, 200])
-      expect(screen.output).to have_received(:winsize)
-
-      screen.output = old_output
+      expect(screen.size_from_io_console).to eq(nil)
+      expect(screen.output).to have_received(:tty?)
     end
 
-    it "doesn't calculate size if io/console not available" do
+    it "doesn't detect size when the io/console fails to load" do
+      allow(screen.output).to receive(:tty?).and_return(true)
       allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
       allow(screen).to receive(:require).with("io/console").and_raise(LoadError)
 
       expect(screen.size_from_io_console).to eq(nil)
+      expect(IO).to have_received(:method_defined?).with(:winsize)
+      expect(screen).to have_received(:require).with("io/console")
     end
 
-    it "doesn't calculate size if it is run without a console" do
-      allow(IO).to receive(:method_defined?).with(:winsize) { true }
-      allow(screen).to receive(:require).with("io/console") { true }
-      allow(screen.output).to receive(:tty?) { true }
-      allow(screen.output).to receive(:respond_to?).with(:winsize) { false }
+    it "warns in verbose mode when the io/console fails to load" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(false)
+      allow(screen).to receive(:require).with("io/console").and_raise(LoadError)
+
+      expect {
+        screen.size_from_io_console(verbose: true)
+      }.to output("no native io/console support or io-console gem\n").to_stderr
+    end
+
+    it "doesn't detect size when the winsize method is missing" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
+      allow(screen.output).to receive(:respond_to?)
+        .with(:winsize).and_return(false)
 
       expect(screen.size_from_io_console).to eq(nil)
+      expect(screen.output).to have_received(:respond_to?).with(:winsize)
+    end
+
+    it "doesn't detect size when the winsize method raises an error" do
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
+      allow(screen.output).to receive_messages(tty?: true, respond_to?: true)
+      allow(screen.output).to receive(:winsize).and_raise(Errno::EOPNOTSUPP)
+
+      expect(screen.size_from_io_console).to eq(nil)
+      expect(screen.output).to have_received(:winsize)
+    end
+
+    it "detects no columns" do
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
+      allow(screen.output).to receive_messages(
+        tty?: true, respond_to?: true, winsize: [51, 0])
+
+      expect(screen.size_from_io_console).to eq(nil)
+      expect(screen.output).to have_received(:winsize)
+    end
+
+    it "detects size" do
+      allow(IO).to receive(:method_defined?).with(:winsize).and_return(true)
+      allow(screen.output).to receive_messages(
+        tty?: true, respond_to?: true, winsize: [51, 211])
+
+      expect(screen.size_from_io_console).to eq([51, 211])
     end
   end
 

@@ -169,11 +169,12 @@ module TTY
     #
     # @api private
     def size_from_io_console(verbose: false)
+      return unless output.tty?
+
       require "io/console" unless IO.method_defined?(:winsize)
+      return unless output.respond_to?(:winsize)
 
-      return unless @output.tty? && @output.respond_to?(:winsize)
-
-      size = @output.winsize
+      size = output.winsize
       size if nonzero_column?(size[1])
     rescue Errno::EOPNOTSUPP
       # no support for winsize on output
