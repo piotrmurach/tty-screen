@@ -124,7 +124,8 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_ioctl" do
+  describe "#size_from_ioctl",
+    unless: TTY::Screen.jruby? || TTY::Screen.windows? do
     before do
       stub_const("Output", Class.new(SimpleDelegator) do
         def winsize
@@ -144,13 +145,61 @@ RSpec.describe TTY::Screen do
       end)
     end
 
-    it "reads terminal size", unless: TTY::Screen.windows? || TTY::Screen.jruby? do
+    it "doesn't detect size with the Linux get window size command" do
+      allow(screen).to receive(:ioctl?).and_return(false)
+
+      expect(screen.size_from_ioctl).to eq(nil)
+      expect(screen).to have_received(:ioctl?).with(0x5413, anything)
+    end
+
+    it "doesn't detect size with the FreeBSD get window size command" do
+      allow(screen).to receive(:ioctl?).and_return(false)
+
+      expect(screen.size_from_ioctl).to eq(nil)
+      expect(screen).to have_received(:ioctl?).with(0x40087468, anything)
+    end
+
+    it "doesn't detect size with the Solaris get window size command" do
+      allow(screen).to receive(:ioctl?).and_return(false)
+
+      expect(screen.size_from_ioctl).to eq(nil)
+      expect(screen).to have_received(:ioctl?).with(0x5468, anything)
+    end
+
+    it "doesn't detect size when the ioctl system call fails" do
+      output = double(:output, write: nil, ioctl: -1)
+
+      replace_standard_streams(output) do
+        expect(screen.size_from_ioctl).to eq(nil)
+        expect(output).to have_received(:ioctl).exactly(9).times
+      end
+    end
+
+    it "doesn't detect size when the ioctl system call raises an error" do
+      output = double(:output, write: nil)
+      allow(output).to receive(:ioctl).and_raise(Errno::EOPNOTSUPP)
+
+      replace_standard_streams(output) do
+        expect(screen.size_from_ioctl).to eq(nil)
+        expect(output).to have_received(:ioctl).exactly(3).times
+      end
+    end
+
+    it "detects no columns" do
+      allow(screen).to receive(:ioctl?).and_return(true)
+
+      expect(screen.size_from_ioctl).to eq(nil)
+    end
+
+    it "detects size" do
       replace_standard_streams(Output.new(StringIO.new)) do
         expect(screen.size_from_ioctl).to eq([51, 211])
       end
     end
+  end
 
-    it "skips reading on jruby", if: TTY::Screen.jruby? do
+  describe "#size_from_ioctl", if: TTY::Screen.jruby? do
+    it "doesn't detect size on JRuby", if: TTY::Screen.jruby? do
       expect(screen.size_from_ioctl).to eq(nil)
     end
   end
