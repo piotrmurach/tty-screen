@@ -2,6 +2,9 @@
 
 ## [v0.8.2] - unreleased
 
+### Changed
+* Change the ioctl system call support check to use the output method
+
 ### Fixed
 * Fix ioctl call test to stub terminal size encoding for big-endian systems
 * Fix to skip terminal size detection from readline on non-TTY output

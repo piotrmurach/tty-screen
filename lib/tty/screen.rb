@@ -183,7 +183,7 @@ module TTY
     end
     module_function :size_from_io_console
 
-    if !jruby? && @output.respond_to?(:ioctl)
+    if !jruby? && output.respond_to?(:ioctl)
       TIOCGWINSZ = 0x5413 # linux
       TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
       TIOCGWINSZ_SOL = 0x5468 # solaris
