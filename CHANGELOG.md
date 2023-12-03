@@ -4,6 +4,7 @@
 
 ### Changed
 * Change the ioctl system call support check to use the output method
+* Change size from ioctl to extract window buffer format and length to constants
 
 ### Fixed
 * Fix ioctl call test to stub terminal size encoding for big-endian systems

@@ -188,20 +188,35 @@ module TTY
       TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
       TIOCGWINSZ_SOL = 0x5468 # solaris
 
+      # The ioctl window size buffer format
+      #
+      # @return [String]
+      #
+      # @api private
+      TIOCGWINSZ_BUF_FMT = "SSSS"
+      private_constant :TIOCGWINSZ_BUF_FMT
+
+      # The ioctl window size buffer length
+      #
+      # @return [Integer]
+      #
+      # @api private
+      TIOCGWINSZ_BUF_LEN = TIOCGWINSZ_BUF_FMT.length
+      private_constant :TIOCGWINSZ_BUF_LEN
+
       # Read terminal size from Unix ioctl
       #
       # @return [nil, Array[Integer, Integer]]
       #
       # @api private
       def size_from_ioctl
-        format = "SSSS"
-        buffer = ([0] * format.size).pack(format)
+        buffer = ([0] * TIOCGWINSZ_BUF_LEN).pack(TIOCGWINSZ_BUF_FMT)
 
         if ioctl?(TIOCGWINSZ, buffer) ||
            ioctl?(TIOCGWINSZ_PPC, buffer) ||
            ioctl?(TIOCGWINSZ_SOL, buffer)
 
-          rows, cols, = buffer.unpack(format)[0..1]
+          rows, cols, = buffer.unpack(TIOCGWINSZ_BUF_FMT)[0..1]
           return [rows, cols] if nonzero_column?(cols)
         end
       end
