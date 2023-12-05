@@ -210,14 +210,14 @@ module TTY
       #
       # @api private
       def size_from_ioctl
-        buffer = ([0] * TIOCGWINSZ_BUF_LEN).pack(TIOCGWINSZ_BUF_FMT)
+        buffer = Array.new(TIOCGWINSZ_BUF_LEN, 0).pack(TIOCGWINSZ_BUF_FMT)
 
         if ioctl?(TIOCGWINSZ, buffer) ||
            ioctl?(TIOCGWINSZ_PPC, buffer) ||
            ioctl?(TIOCGWINSZ_SOL, buffer)
 
-          rows, cols, = buffer.unpack(TIOCGWINSZ_BUF_FMT)[0..1]
-          return [rows, cols] if nonzero_column?(cols)
+          rows, cols, = buffer.unpack(TIOCGWINSZ_BUF_FMT)
+          [rows, cols] if nonzero_column?(cols)
         end
       end
 
