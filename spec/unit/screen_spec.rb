@@ -271,32 +271,73 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_tput" do
-    it "doesn't run command if outside of terminal" do
+    it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
+
       expect(screen.size_from_tput).to eq(nil)
     end
 
-    it "doesn't run command if not available" do
-      allow(screen).to receive(:command_exist?).and_return(false)
+    it "doesn't detect size when the tput command is missing" do
+      path = "/usr/bin/tput"
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen.env).to receive(:fetch)
+        .with("PATHEXT", "").and_return(".exe")
+      allow(screen.env).to receive(:fetch)
+        .with("PATH", "").and_return("/usr/bin")
+      allow(File).to receive(:join).with("/usr/bin", "tput").and_return(path)
+      allow(File).to receive(:exist?).with(path).and_return(false)
+      allow(File).to receive(:exist?).with("#{path}.exe").and_return(false)
+
       expect(screen.size_from_tput).to eq(nil)
+      expect(File).to have_received(:exist?).with(path)
+      expect(File).to have_received(:exist?).with("#{path}.exe")
     end
 
-    it "runs tput commands" do
+    it "doesn't detect size when the tput command raises an IO error" do
       allow(screen.output).to receive(:tty?).and_return(true)
       allow(screen).to receive(:command_exist?).with("tput").and_return(true)
-      allow(screen).to receive(:run_command).with("tput", "lines").and_return(51)
-      allow(screen).to receive(:run_command).with("tput", "cols").and_return(280)
-
-      expect(screen.size_from_tput).to eq([51, 280])
-    end
-
-    it "doesn't return zero size" do
-      allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
-      allow(screen).to receive(:run_command).with("tput", "lines").and_return(0)
-      allow(screen).to receive(:run_command).with("tput", "cols").and_return(0)
+      allow(screen).to receive(:`).with("tput lines").and_raise(IOError)
 
       expect(screen.size_from_tput).to eq(nil)
+      expect(screen).to have_received(:`).with("tput lines")
+    end
+
+    it "doesn't detect size when the tput command raises a system error" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
+      allow(screen).to receive(:`).with("tput lines").and_raise(Errno::ENOENT)
+
+      expect(screen.size_from_tput).to eq(nil)
+      expect(screen).to have_received(:`).with("tput lines")
+    end
+
+    it "detects no lines" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
+      allow(screen).to receive(:`).with("tput lines").and_return(nil)
+
+      expect(screen.size_from_tput).to eq(nil)
+      expect(screen).to have_received(:`).with("tput lines")
+    end
+
+    it "detects zero lines" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
+      allow(screen).to receive(:`).with("tput lines").and_return("0")
+      allow(screen).to receive(:`).with("tput cols").and_return("0")
+
+      expect(screen.size_from_tput).to eq(nil)
+      expect(screen).to have_received(:`).with("tput lines")
+      expect(screen).to have_received(:`).with("tput cols")
+    end
+
+    it "detects size" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("tput").and_return(true)
+      allow(screen).to receive(:`).with("tput lines").and_return("51")
+      allow(screen).to receive(:`).with("tput cols").and_return("211")
+
+      expect(screen.size_from_tput).to eq([51, 211])
     end
   end
 
