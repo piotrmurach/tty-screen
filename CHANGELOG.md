@@ -12,6 +12,7 @@
 * Fix ioctl call test to stub terminal size encoding for big-endian systems
 * Fix to skip terminal size detection from readline on non-TTY output
 * Fix size detection from IO to skip loading io-console on non-TTY output
+* Fix size detection from tput to check for non-zero columns instead of lines
 
 ## [v0.8.1] - 2020-07-17
 

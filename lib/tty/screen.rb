@@ -268,7 +268,7 @@ module TTY
       return unless lines
 
       cols = run_command("tput", "cols")
-      [lines.to_i, cols.to_i] if nonzero_column?(lines)
+      [lines.to_i, cols.to_i] if nonzero_column?(cols)
     end
     module_function :size_from_tput
 

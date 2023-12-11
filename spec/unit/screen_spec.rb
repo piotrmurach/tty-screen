@@ -320,10 +320,10 @@ RSpec.describe TTY::Screen do
       expect(screen).to have_received(:`).with("tput lines")
     end
 
-    it "detects zero lines" do
+    it "detects no columns" do
       allow(screen.output).to receive(:tty?).and_return(true)
       allow(screen).to receive(:command_exist?).with("tput").and_return(true)
-      allow(screen).to receive(:`).with("tput lines").and_return("0")
+      allow(screen).to receive(:`).with("tput lines").and_return("51")
       allow(screen).to receive(:`).with("tput cols").and_return("0")
 
       expect(screen.size_from_tput).to eq(nil)
