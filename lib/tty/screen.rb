@@ -262,7 +262,7 @@ module TTY
     #
     # @api private
     def size_from_tput
-      return unless @output.tty? && command_exist?("tput")
+      return unless output.tty? && command_exist?("tput")
 
       lines = run_command("tput", "lines")
       return unless lines
