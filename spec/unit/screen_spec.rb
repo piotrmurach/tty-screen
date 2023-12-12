@@ -342,30 +342,70 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_stty" do
-    it "doesn't run command if outside of terminal" do
+    it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
+
       expect(screen.size_from_stty).to eq(nil)
     end
 
-    it "doesn't run command if not available" do
-      allow(screen).to receive(:command_exist?).and_return(false)
+    it "doesn't detect size when the stty command is missing" do
+      path = "/usr/bin/stty"
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen.env).to receive(:fetch)
+        .with("PATHEXT", "").and_return(".exe")
+      allow(screen.env).to receive(:fetch)
+        .with("PATH", "").and_return("/usr/bin")
+      allow(File).to receive(:join).with("/usr/bin", "stty").and_return(path)
+      allow(File).to receive(:exist?).with(path).and_return(false)
+      allow(File).to receive(:exist?).with("#{path}.exe").and_return(false)
+
       expect(screen.size_from_stty).to eq(nil)
+      expect(File).to have_received(:exist?).with(path)
+      expect(File).to have_received(:exist?).with("#{path}.exe")
     end
 
-    it "runs stty commands" do
+    it "doesn't detect size when the stty command raises an IO error" do
       allow(screen.output).to receive(:tty?).and_return(true)
       allow(screen).to receive(:command_exist?).with("stty").and_return(true)
-      allow(screen).to receive(:run_command).with("stty", "size").and_return("51 280")
-
-      expect(screen.size_from_stty).to eq([51, 280])
-    end
-
-    it "doesn't return zero size" do
-      allow(screen.output).to receive(:tty?).and_return(true)
-      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
-      allow(screen).to receive(:run_command).with("stty", "size").and_return("0 0")
+      allow(screen).to receive(:`).with("stty size").and_raise(IOError)
 
       expect(screen.size_from_stty).to eq(nil)
+      expect(screen).to have_received(:`).with("stty size")
+    end
+
+    it "doesn't detect size when the stty command raises a system error" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
+      allow(screen).to receive(:`).with("stty size").and_raise(Errno::ENOENT)
+
+      expect(screen.size_from_stty).to eq(nil)
+      expect(screen).to have_received(:`).with("stty size")
+    end
+
+    it "detects no size" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
+      allow(screen).to receive(:`).with("stty size").and_return(nil)
+
+      expect(screen.size_from_stty).to eq(nil)
+      expect(screen).to have_received(:`).with("stty size")
+    end
+
+    it "detects no columns" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
+      allow(screen).to receive(:`).with("stty size").and_return("51 0")
+
+      expect(screen.size_from_stty).to eq(nil)
+      expect(screen).to have_received(:`).with("stty size")
+    end
+
+    it "detects size" do
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:command_exist?).with("stty").and_return(true)
+      allow(screen).to receive(:`).with("stty size").and_return("51 211")
+
+      expect(screen.size_from_stty).to eq([51, 211])
     end
   end
 
