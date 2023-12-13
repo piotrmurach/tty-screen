@@ -276,7 +276,7 @@ module TTY
     #
     # @api private
     def size_from_stty
-      return unless @output.tty? && command_exist?("stty")
+      return unless output.tty? && command_exist?("stty")
 
       out = run_command("stty", "size")
       return unless out

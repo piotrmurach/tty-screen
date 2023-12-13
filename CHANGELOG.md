@@ -7,6 +7,7 @@
 * Change size from ioctl to extract window buffer format and length to constants
 * Change size from ioctl to allocate and read window buffer with fewer objects
 * Change size detection from tput to check TTY on the output method
+* Change size detection from stty to check TTY on the output method
 
 ### Fixed
 * Fix ioctl call test to stub terminal size encoding for big-endian systems
