@@ -410,25 +410,51 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_env" do
-    it "doesn't calculate size without COLUMNS key" do
-      old_env = screen.env
-      screen.env = {"COLUMNS" => nil}
+    it "doesn't detect size when the columns variable is missing" do
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return(nil)
+
       expect(screen.size_from_env).to eq(nil)
-      screen.env = old_env
+      expect(screen.env).to have_received(:[]).with("COLUMNS")
     end
 
-    it "extracts lines and columns from environment" do
-      old_env = screen.env
-      screen.env = {"COLUMNS" => "280", "LINES" => "51"}
-      expect(screen.size_from_env).to eq([51, 280])
-      screen.env = old_env
+    it "doesn't detect size when the columns variable is empty" do
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return("")
+
+      expect(screen.size_from_env).to eq(nil)
+      expect(screen.env).to have_received(:[]).with("COLUMNS")
     end
 
-    it "doesn't return zero size" do
-      old_env = screen.env
-      screen.env = {"COLUMNS" => "0", "LINES" => "0"}
+    it "doesn't detect size when the columns variable isn't an integer" do
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return("51c")
+
       expect(screen.size_from_env).to eq(nil)
-      screen.env = old_env
+      expect(screen.env).to have_received(:[]).with("COLUMNS")
+    end
+
+    it "detects no columns" do
+      allow(screen.env).to receive(:[]).with("LINES").and_return("51")
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return("0")
+
+      expect(screen.size_from_env).to eq(nil)
+      expect(screen.env).to have_received(:[]).with("LINES")
+      expect(screen.env).to have_received(:[]).with("COLUMNS").twice
+    end
+
+    it "detects size from the lines and columns variables" do
+      allow(screen.env).to receive(:[]).with("LINES").and_return("51")
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return("211")
+
+      expect(screen.size_from_env).to eq([51, 211])
+      expect(screen.env).not_to have_received(:[]).with("ROWS")
+    end
+
+    it "detects size from the rows and columns variables" do
+      allow(screen.env).to receive(:[]).with("LINES").and_return(nil)
+      allow(screen.env).to receive(:[]).with("ROWS").and_return("51")
+      allow(screen.env).to receive(:[]).with("COLUMNS").and_return("211")
+
+      expect(screen.size_from_env).to eq([51, 211])
+      expect(screen.env).to have_received(:[]).with("LINES")
     end
   end
 
