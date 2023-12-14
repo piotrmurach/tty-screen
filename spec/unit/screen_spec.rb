@@ -459,25 +459,31 @@ RSpec.describe TTY::Screen do
   end
 
   describe "#size_from_ansicon" do
-    it "doesn't calculate size without ANSICON key" do
-      old_env = screen.env
-      screen.env = {"ANSICON" => nil}
+    it "doesn't detect size when the ansicon variable is missing" do
+      allow(screen.env).to receive(:[]).with("ANSICON").and_return(nil)
+
       expect(screen.size_from_ansicon).to eq(nil)
-      screen.env = old_env
+      expect(screen.env).to have_received(:[]).with("ANSICON")
     end
 
-    it "extracts lines and columns from environment" do
-      old_env = screen.env
-      screen.env = {"ANSICON" => "(280x51)"}
-      expect(screen.size_from_ansicon).to eq([51, 280])
-      screen.env = old_env
+    it "doesn't detect size when the ansicon variable is empty" do
+      allow(screen.env).to receive(:[]).with("ANSICON").and_return("")
+
+      expect(screen.size_from_ansicon).to eq(nil)
+      expect(screen.env).to have_received(:[]).with("ANSICON")
     end
 
-    it "doesn't return zero size" do
-      old_env = screen.env
-      screen.env = {"ANSICON" => "(0x0)"}
+    it "detects no columns" do
+      allow(screen.env).to receive(:[]).with("ANSICON").and_return("(0x51)")
+
       expect(screen.size_from_ansicon).to eq(nil)
-      screen.env = old_env
+      expect(screen.env).to have_received(:[]).with("ANSICON")
+    end
+
+    it "detects size" do
+      allow(screen.env).to receive(:[]).with("ANSICON").and_return("(211x51)")
+
+      expect(screen.size_from_ansicon).to eq([51, 211])
     end
   end
 
