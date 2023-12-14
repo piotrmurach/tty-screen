@@ -297,9 +297,9 @@ module TTY
     #
     # @api private
     def size_from_env
-      return unless @env["COLUMNS"] =~ /^\d+$/
+      return unless env["COLUMNS"] =~ /^\d+$/
 
-      size = [(@env["LINES"] || @env["ROWS"]).to_i, @env["COLUMNS"].to_i]
+      size = [(env["LINES"] || env["ROWS"]).to_i, env["COLUMNS"].to_i]
       size if nonzero_column?(size[1])
     end
     module_function :size_from_env
