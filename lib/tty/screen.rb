@@ -310,7 +310,7 @@ module TTY
     def size_from_ansicon
       return unless env["ANSICON"] =~ /\((.*)x(.*)\)/
 
-      size = [$2, $1].map(&:to_i)
+      size = [::Regexp.last_match(2), ::Regexp.last_match(1)].map(&:to_i)
       size if nonzero_column?(size[1])
     end
     module_function :size_from_ansicon
