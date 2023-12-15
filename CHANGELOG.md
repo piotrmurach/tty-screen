@@ -11,6 +11,7 @@
 * Change size detection from the environment variables to use the env method
 * Change size from the ansicon environment variable to use the env method
 * Change size from ansicon to use regexp last match to lookup pattern matches
+* Change size from ansicon to allocate window dimensions with fewer objects
 
 ### Fixed
 * Fix ioctl call test to stub terminal size encoding for big-endian systems
