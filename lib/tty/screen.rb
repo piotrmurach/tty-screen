@@ -308,7 +308,7 @@ module TTY
     #
     # @api private
     def size_from_ansicon
-      return unless @env["ANSICON"] =~ /\((.*)x(.*)\)/
+      return unless env["ANSICON"] =~ /\((.*)x(.*)\)/
 
       size = [$2, $1].map(&:to_i)
       size if nonzero_column?(size[1])
