@@ -12,13 +12,21 @@ module TTY
   #
   # @api public
   module Screen
+    # The Ruby configuration
+    #
+    # @return [Hash]
+    #
+    # @api private
+    RUBY_CONFIG = defined?(::RbConfig) ? ::RbConfig::CONFIG : {}
+    private_constant :RUBY_CONFIG
+
     # Helper to define private functions
     def self.private_module_function(name)
       module_function(name)
       private_class_method(name)
     end
 
-    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["host_os"] : ::RUBY_PLATFORM)
+    case RUBY_CONFIG["host_os"] || ::RUBY_PLATFORM
     when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
       def windows?; true end
     else
@@ -26,7 +34,7 @@ module TTY
     end
     module_function :windows?
 
-    case (defined?(::RbConfig) ? ::RbConfig::CONFIG["ruby_install_name"] : ::RUBY_ENGINE)
+    case RUBY_CONFIG["ruby_install_name"] || ::RUBY_ENGINE
     when /jruby/
       def jruby?; true end
     else
