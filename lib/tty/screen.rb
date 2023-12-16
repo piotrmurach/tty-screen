@@ -8,7 +8,7 @@ end
 require_relative "screen/version"
 
 module TTY
-  # Used for detecting screen properties
+  # Responsible for detecting terminal screen size
   #
   # @api public
   module Screen
@@ -20,7 +20,11 @@ module TTY
     RUBY_CONFIG = defined?(::RbConfig) ? ::RbConfig::CONFIG : {}
     private_constant :RUBY_CONFIG
 
-    # Helper to define private functions
+    # Define module method as private
+    #
+    # @return [void]
+    #
+    # @api private
     def self.private_module_function(name)
       module_function(name)
       private_class_method(name)
@@ -28,6 +32,11 @@ module TTY
 
     case RUBY_CONFIG["host_os"] || ::RUBY_PLATFORM
     when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+      # Detect Windows system
+      #
+      # @return [Boolean]
+      #
+      # @api private
       def windows?; true end
     else
       def windows?; false end
@@ -36,34 +45,62 @@ module TTY
 
     case RUBY_CONFIG["ruby_install_name"] || ::RUBY_ENGINE
     when /jruby/
+      # Detect JRuby
+      #
+      # @return [Boolean]
+      #
+      # @api private
       def jruby?; true end
     else
       def jruby?; false end
     end
     module_function :jruby?
 
-    # Default terminal size
+    # The default terminal screen size
     #
-    # @api public
+    # @return [Array(Integer, Integer)]
+    #
+    # @api private
     DEFAULT_SIZE = [27, 80].freeze
 
     @env = ENV
     @output = $stderr
 
     class << self
-      # Holds the environment variables
+      # The environment variables
+      #
+      # @example
+      #   TTY::Screen.env
+      #
+      # @example
+      #   TTY::Screen.env = {"ROWS" => "51", "COLUMNS" => "211"}
+      #
+      # @return [Enumerable]
+      #
       # @api public
       attr_accessor :env
 
-      # Specifies an output stream
+      # The output stream with standard error as default
+      #
+      # @example
+      #   TTY::Screen.output
+      #
+      # @example
+      #   TTY::Screen.output = $stdout
+      #
+      # @return [IO]
+      #
       # @api public
       attr_accessor :output
     end
 
-    # Get terminal rows and columns
+    # Detect terminal screen size
     #
-    # @return [Array[Integer, Integer]]
-    #   return rows and columns
+    # @example
+    #   TTY::Screen.size # => [51, 211]
+    #
+    # @return [Array(Integer, Integer)]
+    #   the terminal screen size
     #
     # @api public
     def size(verbose: false)
@@ -80,6 +117,14 @@ module TTY
     end
     module_function :size
 
+    # Detect terminal screen width
+    #
+    # @example
+    #   TTY::Screen.width # => 211
+    #
+    # @return [Integer]
+    #
+    # @api public
     def width
       size[1]
     end
@@ -90,6 +135,14 @@ module TTY
     module_function :columns
     module_function :cols
 
+    # Detect terminal screen height
+    #
+    # @example
+    #   TTY::Screen.height # => 51
+    #
+    # @return [Integer]
+    #
+    # @api public
     def height
       size[0]
     end
@@ -100,9 +153,9 @@ module TTY
     module_function :rows
     module_function :lines
 
-    # Default size for the terminal
+    # Detect terminal screen size from default
     #
-    # @return [Array[Integer, Integer]]
+    # @return [Array(Integer, Integer)]
     #
     # @api private
     def size_from_default
@@ -110,14 +163,23 @@ module TTY
     end
     module_function :size_from_default
 
-    # Determine terminal size with a Windows native API
-    #
-    # @return [nil, Array[Integer, Integer]]
-    #
-    # @api private
     if windows?
+      # The standard output handle
+      #
+      # @return [Integer]
+      #
+      # @api private
       STDOUT_HANDLE = 0xFFFFFFF5
 
+      # Detect terminal screen size from Windows API
+      #
+      # @param [Boolean] verbose
+      #   the verbose mode, by default false
+      #
+      # @return [Array(Integer, Integer), nil]
+      #   the terminal screen size or nil
+      #
+      # @api private
       def size_from_win_api(verbose: false)
         require "fiddle" unless defined?(Fiddle)
 
@@ -146,12 +208,16 @@ module TTY
     end
     module_function :size_from_win_api
 
-    # Determine terminal size on jruby using native Java libs
-    #
-    # @return [nil, Array[Integer, Integer]]
-    #
-    # @api private
     if jruby?
+      # Detect terminal screen size from Java
+      #
+      # @param [Boolean] verbose
+      #   the verbose mode, by default false
+      #
+      # @return [Array(Integer, Integer), nil]
+      #   the terminal screen size or nil
+      #
+      # @api private
       def size_from_java(verbose: false)
         require "java"
 
@@ -167,13 +233,17 @@ module TTY
     end
     module_function :size_from_java
 
-    # Detect screen size by loading io/console lib
+    # Detect terminal screen size from io-console
     #
-    # On Windows io_console falls back to reading environment
-    # variables. This means any user changes to the terminal
-    # size won't be reflected in the runtime of the Ruby app.
+    # On Windows, the io-console falls back to reading environment
+    # variables. This means any user changes to the terminal screen
+    # size will not be reflected in the runtime of the Ruby application.
     #
-    # @return [nil, Array[Integer, Integer]]
+    # @param [Boolean] verbose
+    #   the verbose mode, by default false
+    #
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_io_console(verbose: false)
@@ -192,9 +262,26 @@ module TTY
     module_function :size_from_io_console
 
     if !jruby? && output.respond_to?(:ioctl)
-      TIOCGWINSZ = 0x5413 # linux
-      TIOCGWINSZ_PPC = 0x40087468 # macos, freedbsd, netbsd, openbsd
-      TIOCGWINSZ_SOL = 0x5468 # solaris
+      # The get window size control code for Linux
+      #
+      # @return [Integer]
+      #
+      # @api private
+      TIOCGWINSZ = 0x5413
+
+      # The get window size control code for FreeBSD and macOS
+      #
+      # @return [Integer]
+      #
+      # @api private
+      TIOCGWINSZ_PPC = 0x40087468
+
+      # The get window size control code for Solaris
+      #
+      # @return [Integer]
+      #
+      # @api private
+      TIOCGWINSZ_SOL = 0x5468
 
       # The ioctl window size buffer format
       #
@@ -212,9 +299,10 @@ module TTY
       TIOCGWINSZ_BUF_LEN = TIOCGWINSZ_BUF_FMT.length
       private_constant :TIOCGWINSZ_BUF_LEN
 
-      # Read terminal size from Unix ioctl
+      # Detect terminal screen size from ioctl
       #
-      # @return [nil, Array[Integer, Integer]]
+      # @return [Array(Integer, Integer), nil]
+      #   the terminal screen size or nil
       #
       # @api private
       def size_from_ioctl
@@ -229,11 +317,15 @@ module TTY
         end
       end
 
-      # Check if ioctl can be called and any of the streams is
-      # attached to a terminal.
+      # Check if the ioctl call gets window size on any standard stream
+      #
+      # @param [Integer] control
+      #   the control code
+      # @param [String] buf
+      #   the window size buffer
       #
       # @return [Boolean]
-      #   True if any of the streams is attached to a terminal, false otherwise.
+      #   true if the ioctl call gets window size, false otherwise
       #
       # @api private
       def ioctl?(control, buf)
@@ -249,7 +341,13 @@ module TTY
     end
     module_function :size_from_ioctl
 
-    # Detect screen size using Readline
+    # Detect terminal screen size from readline
+    #
+    # @param [Boolean] verbose
+    #   the verbose mode, by default false
+    #
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_readline(verbose: false)
@@ -266,7 +364,10 @@ module TTY
     end
     module_function :size_from_readline
 
-    # Detect terminal size from tput utility
+    # Detect terminal screen size from tput
+    #
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_tput
@@ -280,7 +381,10 @@ module TTY
     end
     module_function :size_from_tput
 
-    # Detect terminal size from stty utility
+    # Detect terminal screen size from stty
+    #
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_stty
@@ -294,14 +398,15 @@ module TTY
     end
     module_function :size_from_stty
 
-    # Detect terminal size from environment
+    # Detect terminal screen size from environment variables
     #
-    # After executing Ruby code if the user changes terminal
-    # dimensions during code runtime, the code won't be notified,
-    # and hence won't see the new dimensions reflected in its copy
-    # of LINES and COLUMNS environment variables.
+    # After executing Ruby code, when the user changes terminal
+    # screen size during code runtime, the code will not be
+    # notified, and hence will not see the new size reflected
+    # in its copy of LINES and COLUMNS environment variables.
     #
-    # @return [nil, Array[Integer, Integer]]
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_env
@@ -312,7 +417,10 @@ module TTY
     end
     module_function :size_from_env
 
-    # Detect terminal size from Windows ANSICON
+    # Detect terminal screen size from the ANSICON environment variable
+    #
+    # @return [Array(Integer, Integer), nil]
+    #   the terminal screen size or nil
     #
     # @api private
     def size_from_ansicon
@@ -323,7 +431,10 @@ module TTY
     end
     module_function :size_from_ansicon
 
-    # Check if command exists
+    # Check if a command exists
+    #
+    # @param [String] command
+    #   the command to check
     #
     # @return [Boolean]
     #
@@ -338,7 +449,13 @@ module TTY
     end
     private_module_function :command_exist?
 
-    # Runs command silently capturing the output
+    # Run command capturing the standard output
+    #
+    # @param [Array<String>] args
+    #   the command arguments
+    #
+    # @return [String, nil]
+    #   the command output or nil
     #
     # @api private
     def run_command(*args)
@@ -348,9 +465,12 @@ module TTY
     end
     private_module_function :run_command
 
-    # Check if number is non zero
+    # Check if a number is non-zero
     #
-    # return [Boolean]
+    # @param [Integer, String] column
+    #   the column to check
+    #
+    # @return [Boolean]
     #
     # @api private
     def nonzero_column?(column)
