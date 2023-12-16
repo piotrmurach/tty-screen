@@ -122,20 +122,20 @@ module TTY
         require "fiddle" unless defined?(Fiddle)
 
         kernel32 = Fiddle::Handle.new("kernel32")
-        get_std_handle = Fiddle::Function.new(kernel32["GetStdHandle"],
-                          [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
+        get_std_handle = Fiddle::Function.new(
+          kernel32["GetStdHandle"], [-Fiddle::TYPE_INT], Fiddle::TYPE_INT)
         get_console_buffer_info = Fiddle::Function.new(
           kernel32["GetConsoleScreenBufferInfo"],
           [Fiddle::TYPE_LONG, Fiddle::TYPE_VOIDP], Fiddle::TYPE_INT)
 
-        format        = "SSSSSssssSS"
-        buffer        = ([0] * format.size).pack(format)
+        format = "SSSSSssssSS"
+        buffer = ([0] * format.size).pack(format)
         stdout_handle = get_std_handle.(STDOUT_HANDLE)
 
         get_console_buffer_info.(stdout_handle, buffer)
         _, _, _, _, _, left, top, right, bottom, = buffer.unpack(format)
         size = [bottom - top + 1, right - left + 1]
-        return size if nonzero_column?(size[1] - 1)
+        size if nonzero_column?(size[1] - 1)
       rescue LoadError
         warn "no native fiddle module found" if verbose
       rescue Fiddle::DLError
@@ -158,7 +158,7 @@ module TTY
         java_import "jline.TerminalFactory"
         terminal = TerminalFactory.get
         size = [terminal.get_height, terminal.get_width]
-        return size if nonzero_column?(size[1])
+        size if nonzero_column?(size[1])
       rescue
         warn "failed to import java terminal package" if verbose
       end
@@ -332,7 +332,8 @@ module TTY
       exts = env.fetch("PATHEXT", "").split(::File::PATH_SEPARATOR)
       env.fetch("PATH", "").split(::File::PATH_SEPARATOR).any? do |dir|
         file = ::File.join(dir, command)
-        ::File.exist?(file) || exts.any? { |ext| ::File.exist?("#{file}#{ext}") }
+        ::File.exist?(file) ||
+          exts.any? { |ext| ::File.exist?("#{file}#{ext}") }
       end
     end
     private_module_function :command_exist?
