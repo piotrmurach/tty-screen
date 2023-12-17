@@ -1,6 +1,7 @@
 require:
   - rubocop-performance
   - rubocop-rake
+  - rubocop-rspec
 
 AllCops:
   NewCops: enable
@@ -63,6 +64,31 @@ Metrics/PerceivedComplexity:
 Naming/FileName:
   Exclude:
     - "lib/tty-screen.rb"
+
+RSpec/BeEq:
+  Enabled: false
+
+RSpec/DescribedClass:
+  Exclude:
+    - "spec/perf/**/*"
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/FilePath:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/SpecFilePathFormat:
+  Enabled: false
+
+RSpec/SubjectStub:
+  Enabled: false
+
+RSpec/VerifiedDoubles:
+  Enabled: false
 
 Style/BlockDelimiters:
   AllowedMethods:
