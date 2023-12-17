@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-desc "Load gem inside irb console"
+desc "Load gem inside IRB console"
 task :console do
   require "irb"
   require "irb/completion"
@@ -8,4 +8,6 @@ task :console do
   ARGV.clear
   IRB.start
 end
-task :c => :console
+
+desc "Alias for the :console task"
+task c: :console
