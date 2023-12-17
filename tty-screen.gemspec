@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["piotr@piotrmurach.com"]
   spec.summary = "Terminal screen size detection."
   spec.description = "Terminal screen size detection that works on Linux, " \
-                     "OS X and Windows/Cygwin platforms and supports MRI, " \
+                     "macOS and Windows systems and supports Ruby MRI, " \
                      "JRuby, TruffleRuby and Rubinius interpreters."
   spec.homepage = "https://ttytoolkit.org"
   spec.license = "MIT"
