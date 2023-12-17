@@ -29,6 +29,26 @@ RSpec.describe TTY::Screen do
       expect(screen).not_to have_received(:size_from_tput)
     end
 
+    it "falls through with verbose mode enabled to the first detected size" do
+      size_from_methods = {
+        size_from_java: nil,
+        size_from_win_api: nil,
+        size_from_ioctl: nil,
+        size_from_io_console: nil,
+        size_from_readline: [51, 211],
+        size_from_tput: nil
+      }
+      allow(screen).to receive_messages(size_from_methods)
+
+      expect(screen.size(verbose: true)).to eq([51, 211])
+      expect(screen).to have_received(:size_from_java).with(verbose: true)
+      expect(screen).to have_received(:size_from_win_api).with(verbose: true)
+      expect(screen).to have_received(:size_from_ioctl)
+      expect(screen).to have_received(:size_from_io_console).with(verbose: true)
+      expect(screen).to have_received(:size_from_readline).with(verbose: true)
+      expect(screen).not_to have_received(:size_from_tput)
+    end
+
     it "falls through all detections to the default size" do
       size_from_methods = {
         size_from_java: nil,
