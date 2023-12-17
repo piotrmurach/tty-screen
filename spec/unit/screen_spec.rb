@@ -7,38 +7,102 @@ require "stringio"
 RSpec.describe TTY::Screen do
   subject(:screen) { described_class }
 
-  describe "#size" do
-    it "correctly falls through choices" do
-      old_output = screen.output
-      screen.output = StringIO.new
-
-      {
+  describe ".size" do
+    it "falls through to the first detected size" do
+      size_from_methods = {
         size_from_java: nil,
         size_from_win_api: nil,
         size_from_ioctl: nil,
-        size_from_io_console: [51, 280],
-        size_from_readline: nil
-      }.each do |size_method, result|
-        allow(screen).to receive(size_method) { result }
-      end
+        size_from_io_console: nil,
+        size_from_readline: [51, 211],
+        size_from_tput: nil
+      }
+      allow(screen).to receive_messages(size_from_methods)
 
-      expect(screen.size).to eq([51, 280])
-      expect(screen).to have_received(:size_from_java)
-      expect(screen).to have_received(:size_from_win_api)
+      expect(screen.size).to eq([51, 211])
+      expect(screen).to have_received(:size_from_java).with(verbose: false)
+      expect(screen).to have_received(:size_from_win_api).with(verbose: false)
       expect(screen).to have_received(:size_from_ioctl)
-      expect(screen).to_not have_received(:size_from_readline)
+      expect(screen).to have_received(:size_from_io_console)
+        .with(verbose: false)
+      expect(screen).to have_received(:size_from_readline).with(verbose: false)
+      expect(screen).not_to have_received(:size_from_tput)
+    end
 
-      screen.output = old_output
+    it "falls through all detections to the default size" do
+      size_from_methods = {
+        size_from_java: nil,
+        size_from_win_api: nil,
+        size_from_ioctl: nil,
+        size_from_io_console: nil,
+        size_from_readline: nil,
+        size_from_tput: nil,
+        size_from_stty: nil,
+        size_from_env: nil,
+        size_from_ansicon: nil
+      }
+      allow(screen).to receive_messages(size_from_methods)
+
+      expect(screen.size).to eq([27, 80])
+      size_from_methods.each_key do |size_from_method|
+        expect(screen).to have_received(size_from_method)
+      end
     end
   end
 
-  describe "#size_from_win_api" do
+  describe ".width" do
+    it "detects width" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.width).to eq(211)
+    end
+
+    it "aliases width as columns" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.columns).to eq(screen.width)
+    end
+
+    it "aliases width as cols" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.cols).to eq(screen.width)
+    end
+  end
+
+  describe ".height" do
+    it "detects height" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.height).to eq(51)
+    end
+
+    it "aliases height as rows" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.rows).to eq(screen.height)
+    end
+
+    it "aliases height as lines" do
+      allow(screen).to receive(:size).and_return([51, 211])
+
+      expect(screen.lines).to eq(screen.height)
+    end
+  end
+
+  describe ".size_from_default" do
+    it "detects size" do
+      expect(screen.size_from_default).to eq([27, 80])
+    end
+  end
+
+  describe ".size_from_win_api" do
     it "doesn't check size on non-windows platform", unless: TTY::Screen.windows? do
       expect(screen.size_from_win_api).to eq(nil)
     end
   end
 
-  describe "#size_from_java" do
+  describe ".size_from_java" do
     it "doesn't import java on non-jruby platform", unless: TTY::Screen.jruby? do
       expect(screen.size_from_java).to eq(nil)
     end
@@ -59,7 +123,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_io_console" do
+  describe ".size_from_io_console" do
     it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
 
@@ -124,7 +188,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_ioctl",
+  describe ".size_from_ioctl",
     unless: TTY::Screen.jruby? || TTY::Screen.windows? do
     before do
       stub_const("Output", Class.new(SimpleDelegator) do
@@ -198,13 +262,13 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_ioctl", if: TTY::Screen.jruby? do
+  describe ".size_from_ioctl", if: TTY::Screen.jruby? do
     it "doesn't detect size on JRuby", if: TTY::Screen.jruby? do
       expect(screen.size_from_ioctl).to eq(nil)
     end
   end
 
-  describe "#size_from_readline" do
+  describe ".size_from_readline" do
     it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
 
@@ -270,7 +334,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_tput" do
+  describe ".size_from_tput" do
     it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
 
@@ -341,7 +405,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_stty" do
+  describe ".size_from_stty" do
     it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
 
@@ -409,7 +473,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_env" do
+  describe ".size_from_env" do
     it "doesn't detect size when the columns variable is missing" do
       allow(screen.env).to receive(:[]).with("COLUMNS").and_return(nil)
 
@@ -458,7 +522,7 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe "#size_from_ansicon" do
+  describe ".size_from_ansicon" do
     it "doesn't detect size when the ansicon variable is missing" do
       allow(screen.env).to receive(:[]).with("ANSICON").and_return(nil)
 
@@ -484,53 +548,6 @@ RSpec.describe TTY::Screen do
       allow(screen.env).to receive(:[]).with("ANSICON").and_return("(211x51)")
 
       expect(screen.size_from_ansicon).to eq([51, 211])
-    end
-  end
-
-  describe "#size_from_default" do
-    it "suggests default terminal size" do
-      [:size_from_java,
-       :size_from_win_api,
-       :size_from_ioctl,
-       :size_from_io_console,
-       :size_from_readline,
-       :size_from_tput,
-       :size_from_stty,
-       :size_from_env,
-       :size_from_ansicon].each do |method|
-        allow(screen).to receive(method).and_return(nil)
-       end
-      expect(screen.size).to eq([27, 80])
-    end
-  end
-
-  describe "#width" do
-    it "calcualtes screen width" do
-      allow(screen).to receive(:size).and_return([51, 280])
-
-      expect(screen.width).to eq(280)
-    end
-
-    it "aliases width to columns and cols" do
-      allow(screen).to receive(:size).and_return([51, 280])
-
-      expect(screen.columns).to eq(280)
-      expect(screen.cols).to eq(280)
-    end
-  end
-
-  describe "#height" do
-    it "calcualtes screen height" do
-      allow(screen).to receive(:size).and_return([51, 280])
-
-      expect(screen.height).to eq(51)
-    end
-
-    it "aliases width to rows and lines" do
-      allow(screen).to receive(:size).and_return([51, 280])
-
-      expect(screen.rows).to eq(51)
-      expect(screen.lines).to eq(51)
     end
   end
 end
