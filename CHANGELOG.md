@@ -1,6 +1,6 @@
 # Change log
 
-## [v0.8.2] - unreleased
+## [v0.8.2] - 2023-12-17
 
 ### Changed
 * Change the ioctl system call support check to use the output method
