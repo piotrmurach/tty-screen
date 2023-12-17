@@ -17,16 +17,18 @@
 [codeclimate]: https://codeclimate.com/github/piotrmurach/tty-screen
 [coverage]: https://coveralls.io/r/piotrmurach/tty-screen
 
-> Terminal screen size detection which works on Linux, OS X and Windows/Cygwin platforms and supports MRI, JRuby, TruffleRuby and Rubinius interpreters.
+> Terminal screen size detection that works on Linux, macOS and Windows systems
+  and supports Ruby MRI, JRuby, TruffleRuby and Rubinius interpreters.
 
-**TTY::Screen** provides independent terminal screen size detection component for [TTY](https://github.com/piotrmurach/tty) toolkit.
+**TTY::Screen** provides a terminal screen size detection component for the
+[TTY](https://github.com/piotrmurach/tty) toolkit.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'tty-screen'
+gem "tty-screen"
 ```
 
 And then execute:
@@ -39,13 +41,14 @@ Or install it yourself as:
 
 ## 1. Usage
 
-**TTY::Screen** allows you to detect terminal screen size by calling `size` method which returns [height, width] tuple.
+Use the `size` method to detect terminal screen size. It will result in
+a `[height, width]` array:
 
 ```ruby
-TTY::Screen.size     # => [51, 280]
+TTY::Screen.size  # => [51, 280]
 ```
 
-To read terminal width do:
+Use the `width`, `columns` or `cols` method to detect terminal screen width:
 
 ```ruby
 TTY::Screen.width    # => 280
@@ -53,13 +56,19 @@ TTY::Screen.columns  # => 280
 TTY::Screen.cols     # => 280
 ```
 
-Similarly, to read terminal height do:
+Use the `height`, `lines` or `rows` method to detect terminal screen height:
 
 ```ruby
-TTY::Screen.height   # => 51
-TTY::Screen.rows     # => 51
-TTY::Screen.lines    # => 51
+TTY::Screen.height  # => 51
+TTY::Screen.lines   # => 51
+TTY::Screen.rows    # => 51
 ```
+
+## Development
+
+After checking out the repo, run `bin/setup` to install dependencies.
+Then, run `rake spec` to run the tests. You can also run `bin/console`
+for an interactive prompt that will allow you to experiment.
 
 ## Contributing
 
@@ -69,8 +78,19 @@ TTY::Screen.lines    # => 51
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create a new Pull Request
 
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+## License
+
+The gem is available as open source under the terms of the
+[MIT License](https://opensource.org/licenses/MIT).
+
+## Code of Conduct
+
+Everyone interacting in the TTY::Screen project's codebases, issue trackers,
+chat rooms and mailing lists is expected to follow the
+[code of conduct](https://github.com/piotrmurach/tty-screen/blob/master/CODE_OF_CONDUCT.md).
 
 ## Copyright
 
-Copyright (c) 2014 Piotr Murach. See LICENSE for further details.
+Copyright (c) 2014 Piotr Murach. See
+[LICENSE.txt](https://github.com/piotrmurach/tty-screen/blob/master/LICENSE.txt)
+for further details.
