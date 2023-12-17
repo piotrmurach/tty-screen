@@ -117,17 +117,19 @@ RSpec.describe TTY::Screen do
   end
 
   describe ".size_from_win_api" do
-    it "doesn't check size on non-windows platform", unless: TTY::Screen.windows? do
+    it "doesn't check size on non-windows platform",
+       unless: described_class.windows? do
       expect(screen.size_from_win_api).to eq(nil)
     end
   end
 
   describe ".size_from_java" do
-    it "doesn't import java on non-jruby platform", unless: TTY::Screen.jruby? do
+    it "doesn't import java on non-jruby platform",
+       unless: described_class.jruby? do
       expect(screen.size_from_java).to eq(nil)
     end
 
-    it "imports java library on jruby", if: TTY::Screen.jruby? do
+    it "imports java library on jruby", if: described_class.jruby? do
       class << screen
         def java_import(*args); end
       end
@@ -209,7 +211,7 @@ RSpec.describe TTY::Screen do
   end
 
   describe ".size_from_ioctl",
-    unless: TTY::Screen.jruby? || TTY::Screen.windows? do
+           unless: described_class.jruby? || described_class.windows? do
     before do
       stub_const("Output", Class.new(SimpleDelegator) do
         def winsize
@@ -282,8 +284,8 @@ RSpec.describe TTY::Screen do
     end
   end
 
-  describe ".size_from_ioctl", if: TTY::Screen.jruby? do
-    it "doesn't detect size on JRuby", if: TTY::Screen.jruby? do
+  describe ".size_from_ioctl", if: described_class.jruby? do
+    it "doesn't detect size on JRuby", if: described_class.jruby? do
       expect(screen.size_from_ioctl).to eq(nil)
     end
   end
