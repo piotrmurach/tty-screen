@@ -1,51 +1,97 @@
 AllCops:
   NewCops: enable
+  TargetRubyVersion: 2.0
+
+Gemspec/DevelopmentDependencies:
+  Enabled: false
+
+Layout/FirstArrayElementIndentation:
+  EnforcedStyle: consistent
+
+Layout/FirstHashElementIndentation:
+  EnforcedStyle: consistent
 
 Layout/LineLength:
   Max: 80
 
-Lint/AssignmentInCondition:
+Layout/MultilineMethodCallBraceLayout:
+  Enabled: false
+
+Layout/MultilineOperationIndentation:
+  Enabled: false
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+Lint/DuplicateMethods:
+  Enabled: false
+
+Lint/SuppressedException:
+  Enabled: false
+
+Lint/UnusedMethodArgument:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 30
+  AllowedMethods:
+    - size_from_win_api
 
 Metrics/BlockLength:
-  CountComments: true
-  Max: 25
-  IgnoredMethods: []
   Exclude:
     - "spec/**/*"
-
-Metrics/ClassLength:
-  Max: 1500
+    - "**/*.gemspec"
 
 Metrics/CyclomaticComplexity:
-  Enabled: false
+  AllowedMethods:
+    - size
 
 Metrics/MethodLength:
-  Max: 20
+  AllowedMethods:
+    - size_from_win_api
 
-Naming/BinaryOperatorParameterName:
+Metrics/ModuleLength:
   Enabled: false
 
-Style/AsciiComments:
+Metrics/PerceivedComplexity:
+  AllowedMethods:
+    - size
+
+Naming/FileName:
+  Exclude:
+    - "lib/tty-screen.rb"
+
+Style/BlockDelimiters:
+  AllowedMethods:
+    - expect
+    - let
+
+Style/CommandLiteral:
+  EnforcedStyle: percent_x
+
+Style/CommentedKeyword:
+  Enabled: false
+
+Style/FetchEnvVar:
+  AllowedVars:
+    - COVERAGE
+
+Style/IfUnlessModifier:
   Enabled: false
 
 Style/LambdaCall:
-  SupportedStyles:
-  - call
-  - braces
+  EnforcedStyle: braces
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Style/RescueStandardError:
+  EnforcedStyle: implicit
+
+Style/SingleLineMethods:
+  Enabled: false
 
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
-Style/TrivialAccessors:
-  Enabled: false
-
-# { ... } for multi-line blocks is okay
-Style/BlockDelimiters:
-  Enabled: false
-
-Style/CommentedKeyword:
-  Enabled: false
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: double_quotes
