@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
     "rubygems_mfa_required" => "true",
     "source_code_uri" => "https://github.com/piotrmurach/tty-screen"
   }
-  spec.files = Dir["lib/**/*"]
+  spec.files = Dir["lib/**/*", "sig/**/*"]
   spec.extra_rdoc_files = ["README.md", "CHANGELOG.md", "LICENSE.txt"]
   spec.require_paths = ["lib"]
   spec.required_ruby_version = ">= 2.0.0"

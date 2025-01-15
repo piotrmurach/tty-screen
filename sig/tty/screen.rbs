@@ -1,0 +1,17 @@
+module TTY
+  module Screen
+    def self.cols: () -> Integer
+
+    def self.columns: () -> Integer
+
+    def self.height: () -> Integer
+
+    def self.lines: () -> Integer
+
+    def self.rows: () -> Integer
+
+    def self.size: () -> Integer
+
+    def self.width: () -> Integer
+  end
+end
