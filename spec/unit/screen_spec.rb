@@ -271,6 +271,15 @@ RSpec.describe TTY::Screen do
       end
     end
 
+    it "doesn't detect size if the output doesn't respond to #iotcl" do
+      output = double(:output, write: nil)
+      allow(output).to receive(:ioctl).and_raise(NoMethodError)
+
+      replace_standard_streams(output) do
+        expect(screen.size_from_ioctl).to eq(nil)
+      end
+    end
+
     it "detects no columns" do
       allow(screen).to receive(:ioctl?).and_return(true)
 
