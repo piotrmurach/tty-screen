@@ -332,7 +332,7 @@ module TTY
         ($stdout.ioctl(control, buf) >= 0) ||
           ($stdin.ioctl(control, buf) >= 0) ||
           ($stderr.ioctl(control, buf) >= 0)
-      rescue SystemCallError
+      rescue SystemCallError, NoMethodError
         false
       end
       module_function :ioctl?
