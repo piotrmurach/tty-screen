@@ -301,24 +301,22 @@ RSpec.describe TTY::Screen do
     end
 
     it "doesn't detect size when the readline fails to load" do
-      undefine_const(:Readline) do
-        allow(screen.output).to receive(:tty?).and_return(true)
-        allow(screen).to receive(:require).with("readline").and_raise(LoadError)
+      hide_const("Readline")
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:require).with("readline").and_raise(LoadError)
 
-        expect(screen.size_from_readline).to eq(nil)
-        expect(screen).to have_received(:require).with("readline")
-      end
+      expect(screen.size_from_readline).to eq(nil)
+      expect(screen).to have_received(:require).with("readline")
     end
 
     it "warns in verbose mode when the readline fails to load" do
-      undefine_const(:Readline) do
-        allow(screen.output).to receive(:tty?).and_return(true)
-        allow(screen).to receive(:require).with("readline").and_raise(LoadError)
+      hide_const("Readline")
+      allow(screen.output).to receive(:tty?).and_return(true)
+      allow(screen).to receive(:require).with("readline").and_raise(LoadError)
 
-        expect {
-          screen.size_from_readline(verbose: true)
-        }.to output("no readline gem\n").to_stderr
-      end
+      expect {
+        screen.size_from_readline(verbose: true)
+      }.to output("no readline gem\n").to_stderr
     end
 
     it "doesn't detect size when the get_screen_size method is missing" do
