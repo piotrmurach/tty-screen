@@ -1,5 +1,10 @@
 # Change log
 
+## [v0.8.3] - unreleased
+
+### Fixed
+* Fix size detection from ioctl to skip standard streams without ioctl support
+
 ## [v0.8.2] - 2023-12-17
 
 ### Changed
@@ -156,6 +161,7 @@
 ### Fixed
 * Fix bug with screen detection from_io_console by @luxflux
 
+[v0.8.3]: https://github.com/piotrmurach/tty-screen/compare/v0.8.2...master
 [v0.8.2]: https://github.com/piotrmurach/tty-screen/compare/v0.8.1...v0.8.2
 [v0.8.1]: https://github.com/piotrmurach/tty-screen/compare/v0.8.0...v0.8.1
 [v0.8.0]: https://github.com/piotrmurach/tty-screen/compare/v0.7.1...v0.8.0

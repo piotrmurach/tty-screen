@@ -329,9 +329,9 @@ module TTY
       #
       # @api private
       def ioctl?(control, buf)
-        ($stdout.ioctl(control, buf) >= 0) ||
-          ($stdin.ioctl(control, buf) >= 0) ||
-          ($stderr.ioctl(control, buf) >= 0)
+        [$stdout, $stdin, $stderr].any? do |stream|
+          stream.respond_to?(:ioctl) && stream.ioctl(control, buf) >= 0
+        end
       rescue SystemCallError
         false
       end

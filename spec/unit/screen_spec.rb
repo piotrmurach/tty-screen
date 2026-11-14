@@ -271,6 +271,20 @@ RSpec.describe TTY::Screen do
       end
     end
 
+    it "doesn't detect size when the standard streams don't support ioctl" do
+      replace_standard_streams(StringIO.new) do
+        expect(screen.size_from_ioctl).to eq(nil)
+      end
+    end
+
+    it "detects size from a stream that supports ioctl" do
+      replace_standard_streams(StringIO.new) do
+        $stdin = Output.new(StringIO.new)
+
+        expect(screen.size_from_ioctl).to eq([51, 211])
+      end
+    end
+
     it "detects no columns" do
       allow(screen).to receive(:ioctl?).and_return(true)
 
