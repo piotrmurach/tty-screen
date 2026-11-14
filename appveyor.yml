@@ -27,3 +27,29 @@ environment:
     - ruby_version: "25-x64"
     - ruby_version: "26"
     - ruby_version: "26-x64"
+    - ruby_version: "27"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "27-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "30"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "30-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "31"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "31-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "32"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "32-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - ruby_version: "33"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2026
+    - ruby_version: "33-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2026
+    - ruby_version: "34"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2026
+    - ruby_version: "34-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2026
+    - ruby_version: "40-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2026
