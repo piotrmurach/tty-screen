@@ -291,6 +291,8 @@ RSpec.describe TTY::Screen do
   end
 
   describe ".size_from_readline" do
+    before { stub_const("Readline", Module.new) }
+
     it "doesn't detect size on non-tty output" do
       allow(screen.output).to receive(:tty?).and_return(false)
 
