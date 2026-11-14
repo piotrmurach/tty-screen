@@ -33,6 +33,8 @@ jobs:
           - "4.0"
           - ruby-head
           - jruby-9.4
+          - jruby-10.0
+          - jruby-10.1
           - jruby-head
           - truffleruby-head
         include:
